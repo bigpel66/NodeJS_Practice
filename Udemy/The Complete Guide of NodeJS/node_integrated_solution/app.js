@@ -1,5 +1,3 @@
-const http = require("http");
-
 const express = require("express");
 
 const app = express();
@@ -11,8 +9,7 @@ app.use((request, response, next) => {
 
 app.use((requset, response, next) => {
   console.log("2번 동작");
+  response.send('<h1>Hello from Express</h1>');
 });
 
-const server = http.createServer(app);
-
-server.listen(3000);
+app.listen(3000);
