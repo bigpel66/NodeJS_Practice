@@ -11,7 +11,7 @@ const products = [];
 // /admin/add-product
 router
   .get("/add-product", (requset, response, next) => {
-    response.sendFile(path.join(rootDir, "views", "add-product.html"));
+    response.render("add-product", { title: "Add Product" });
   })
   .post("/add-product", (request, response, next) => {
     products.push({ title: request.body.title });
