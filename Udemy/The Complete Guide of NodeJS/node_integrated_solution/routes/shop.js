@@ -11,7 +11,14 @@ router.get("/", (request, response, next) => {
   console.log(adminData.products);
   const products = adminData.products;
 
-  response.render("shop", { products: products, docTitle: "Shop" });
+  response.render("shop", {
+    products: products,
+    pageTitle: "Shop",
+    path: "/",
+    hasProducts: products.length > 0,
+    activeShop: true,
+    productCSS: true
+  });
 });
 
 module.exports = router;

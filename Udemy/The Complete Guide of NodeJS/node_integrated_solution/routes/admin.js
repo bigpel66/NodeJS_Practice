@@ -11,7 +11,13 @@ const products = [];
 // /admin/add-product
 router
   .get("/add-product", (requset, response, next) => {
-    response.render("add-product", { title: "Add Product" });
+    response.render("add-product", {
+      path: "/admin/add-product",
+      pageTitle: "Add-Product",
+      activeAddProduct: true,
+      productCSS: true,
+      formsCSS: true
+    });
   })
   .post("/add-product", (request, response, next) => {
     products.push({ title: request.body.title });
