@@ -1,28 +1,32 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const expressHbs = require("express-handlebars");
-
-const mainRoute = require("./routes/main");
-const rootRoute = require("./routes/add-user");
-const usersRoute = require("./routes/user-list");
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: false }));
-
-app.engine("hbs", expressHbs());
+app.engine(
+  "hbs",
+  expressHbs({
+    layoutsDir: "views/layouts",
+    defaultLayout: "main-layout",
+    extname: "hbs"
+  })
+);
 
 app.set("view engine", "pug");
 app.set("veiw engine", "hbs");
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-app.use(mainRoute);
-app.use(rootRoute);
-app.use(usersRoute);
+app.get("/", (request, response, next) => {
+  response.render();
+});
 
-app.use((reques, response, next) => {
-  response.statusCode(404).render();
+app.get("/users", (request, response, next) => {
+  response.render();
+});
+
+app.post("/add-user", (request, response, next) => {
+  response.redirect("/");
 });
 
 app.listen(3000);
