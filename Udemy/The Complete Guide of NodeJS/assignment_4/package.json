@@ -2,10 +2,10 @@
   "name": "assignment_4",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start" : "nodemon app.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,7 +16,7 @@
     "body-parser": "^1.19.0",
     "ejs": "^3.0.2",
     "express": "^4.17.1",
-    "handlebars": "^4.7.3",
+    "express-handlebars": "^4.0.0",
     "pug": "^2.0.4"
   }
 }
