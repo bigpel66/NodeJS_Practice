@@ -25,11 +25,13 @@ const shopRoutes = require("./routes/shop");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/admin", adminRoutes.router);
+app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
 app.use((request, response, next) => {
-  response.status(404).render("404", { path: "", pageTitle: "Page Not Found" });
+    response
+        .status(404)
+        .render("404", { path: "", pageTitle: "Page Not Found" });
 });
 
 app.listen(3000);
