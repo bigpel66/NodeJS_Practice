@@ -12,20 +12,19 @@ module.exports.getAddProduct = (requset, response, next) => {
 
 module.exports.postAddProduct = (request, response, next) => {
     const product = new Product(request.body.title);
-    console.log(request.body.title);
-    console.log(product.title);
     product.save();
     response.redirect('/');
 };
 
 module.exports.getProducts = (request, response, next) => {
-    const products = Product.fetchAll();
-    response.render('shop', {
-        products: products,
-        pageTitle: 'Shop',
-        path: '/',
-        hasProducts: products.length > 0,
-        activeShop: true,
-        productCSS: true
+    Product.fetchAll(products => {
+        response.render('shop', {
+            products: products,
+            pageTitle: 'Shop',
+            path: '/',
+            hasProducts: products.length > 0,
+            activeShop: true,
+            productCSS: true
+        });
     });
 };
