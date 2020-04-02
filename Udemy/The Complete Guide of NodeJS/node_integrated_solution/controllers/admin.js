@@ -16,7 +16,7 @@ module.exports.postAddProduct = (request, response, next) => {
     const price = request.body.price;
     const description = request.body.description;
 
-    const product = new Product(title, imageUrl, price, description);
+    const product = new Product(title, imageUrl, description, price);
     product.save();
     response.redirect('/admin/products');
 };
