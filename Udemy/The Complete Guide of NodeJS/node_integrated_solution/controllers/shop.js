@@ -10,6 +10,14 @@ module.exports.getProducts = (request, response, next) => {
     });
 };
 
+module.exports.getProduct = (request, response, next) => {
+    const productId = request.params.productId;
+    Product.findById(productId, product => {
+        console.log(product);
+    });
+    response.redirect('/');
+};
+
 module.exports.getIndex = (request, response, next) => {
     Product.fetchAll(products => {
         response.render('shop/index', {
