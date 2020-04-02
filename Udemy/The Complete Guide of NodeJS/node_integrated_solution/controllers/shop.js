@@ -27,9 +27,16 @@ module.exports.getCart = (request, response, next) => {
     });
 };
 
+module.exports.getOrders = (request, response, next) => {
+    response.render('shop/orders', {
+        pageTitle: 'Your Orders',
+        path: '/orders'
+    });
+};
+
 module.exports.getCheckout = (request, response, next) => {
     response.render('shop/checkout', {
-        pageTitle: 'Checkout ',
+        pageTitle: 'Checkout',
         path: '/checkout'
     });
 };
