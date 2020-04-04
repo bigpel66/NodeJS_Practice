@@ -4,6 +4,7 @@ module.exports.getAddProduct = (requset, response, next) => {
     response.render('admin/edit-product', {
         path: '/admin/add-product',
         pageTitle: 'Add-Product',
+        editing: 'false',
     });
 };
 
@@ -20,15 +21,22 @@ module.exports.postAddProduct = (request, response, next) => {
 
 module.exports.getEditProduct = (request, response, next) => {
     const editing = request.query.editing;
+    const productId = request.params.productId;
 
-    if (editing === 'true') {
+    if (editing !== 'true') {
         response.redirect('/');
     }
 
-    response.render('admin/edit-product', {
-        path: '/admin/edit-product',
-        pageTitle: 'Edit Product',
-        editing: editing,
+    Product.findById(productId, (product) => {
+        if (!product) {
+            return response.redirect('/');
+        }
+        response.render('admin/edit-product', {
+            path: '/admin/edit-product',
+            pageTitle: 'Edit Product',
+            editing: editing,
+            product: product,
+        });
     });
 };
 
