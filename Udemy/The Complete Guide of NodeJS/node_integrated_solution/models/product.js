@@ -35,7 +35,6 @@ module.exports = class Product {
                 this.id = Math.random().toString();
                 products.push(this);
             }
-            console.log(products);
             fs.writeFile(tempPath, JSON.stringify(products), (error) => {
                 if (error) {
                     console.log(error);
@@ -54,6 +53,20 @@ module.exports = class Product {
                 return product.id === productId;
             });
             cb(product);
+        });
+    }
+
+    static deleteById(productId) {
+        getProductsFromFile((products) => {
+            products = products.filter((product) => {
+                return product.id !== productId;
+            });
+
+            fs.writeFile(tempPath, JSON.stringify(products), (error) => {
+                if (error) {
+                    console.log(error);
+                }
+            });
         });
     }
 };

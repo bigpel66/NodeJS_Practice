@@ -16,7 +16,7 @@ module.exports.postAddProduct = (request, response, next) => {
 
     const product = new Product(null, title, imageUrl, description, price);
     product.save();
-    response.redirect('/admin/products');
+    response.redirect('/');
 };
 
 module.exports.getEditProduct = (request, response, next) => {
@@ -24,7 +24,7 @@ module.exports.getEditProduct = (request, response, next) => {
     const productId = request.params.productId;
 
     if (editing !== 'true') {
-        response.redirect('/');
+        response.redirect('/products');
     }
 
     Product.findById(productId, (product) => {
@@ -51,7 +51,7 @@ module.exports.postEditProduct = (request, response, next) => {
 
     product.save();
 
-    response.redirect('/');
+    response.redirect('/admin/products');
 };
 
 module.exports.getProducts = (request, response, next) => {
@@ -62,4 +62,10 @@ module.exports.getProducts = (request, response, next) => {
             path: '/admin/products',
         });
     });
+};
+
+module.exports.postDeleteProduct = (request, response, next) => {
+    const productId = request.body.productId;
+    Product.deleteById(productId);
+    response.redirect('/admin/products');
 };
