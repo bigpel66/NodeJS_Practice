@@ -14,7 +14,7 @@ module.exports.postAddProduct = (request, response, next) => {
     const price = request.body.price;
     const description = request.body.description;
 
-    const product = new Product(title, imageUrl, description, price);
+    const product = new Product(null, title, imageUrl, description, price);
     product.save();
     response.redirect('/admin/products');
 };
@@ -38,6 +38,20 @@ module.exports.getEditProduct = (request, response, next) => {
             product: product,
         });
     });
+};
+
+module.exports.postEditProduct = (request, response, next) => {
+    const product = new Product(
+        request.body.id,
+        request.body.title,
+        request.body.imageUrl,
+        request.body.description,
+        request.body.price
+    );
+
+    product.save();
+
+    response.redirect('/');
 };
 
 module.exports.getProducts = (request, response, next) => {
