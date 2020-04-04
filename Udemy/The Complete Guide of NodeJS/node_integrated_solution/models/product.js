@@ -5,7 +5,7 @@ const rootPath = require('../helpers/path');
 
 const tempPath = path.join(rootPath, 'data', 'products.json');
 
-const getProductsFromFile = cb => {
+const getProductsFromFile = (cb) => {
     fs.readFile(tempPath, (error, fileContent) => {
         if (error) {
             cb([]);
@@ -25,10 +25,10 @@ module.exports = class Product {
 
     save() {
         this.id = Math.random().toString();
-        getProductsFromFile(products => {
+        getProductsFromFile((products) => {
             products.push(this);
             console.log(products);
-            fs.writeFile(tempPath, JSON.stringify(products), error => {
+            fs.writeFile(tempPath, JSON.stringify(products), (error) => {
                 if (error) {
                     console.log(error);
                 }
@@ -41,8 +41,8 @@ module.exports = class Product {
     }
 
     static findById(productId, cb) {
-        getProductsFromFile(products => {
-            const product = products.find(product => {
+        getProductsFromFile((products) => {
+            const product = products.find((product) => {            
                 return product.id === productId;
             });
             cb(product);
