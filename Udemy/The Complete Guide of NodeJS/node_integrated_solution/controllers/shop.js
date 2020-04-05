@@ -64,6 +64,15 @@ module.exports.postCart = (request, response, nex) => {
     response.redirect('/cart');
 };
 
+module.exports.postCartDelete = (request, response, next) => {
+    const productId = request.body.productId;
+
+    Product.findById(productId, (product) => {
+        Cart.deleteProduct(product.id, product.price);
+        response.redirect('/cart');
+    });
+};
+
 module.exports.getOrders = (request, response, next) => {
     response.render('shop/orders', {
         pageTitle: 'Your Orders',
