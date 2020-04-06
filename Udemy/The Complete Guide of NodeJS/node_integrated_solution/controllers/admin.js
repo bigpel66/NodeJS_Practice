@@ -15,8 +15,16 @@ module.exports.postAddProduct = (request, response, next) => {
     const description = request.body.description;
 
     const product = new Product(null, title, imageUrl, description, price);
-    product.save();
-    response.redirect('/');
+    product
+        .save()
+        .then(() => {
+            response.redirect('/');
+        })
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
+        });
 };
 
 module.exports.getEditProduct = (request, response, next) => {

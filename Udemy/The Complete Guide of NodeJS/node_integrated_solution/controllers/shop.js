@@ -19,13 +19,19 @@ module.exports.getProducts = (request, response, next) => {
 
 module.exports.getProduct = (request, response, next) => {
     const productId = request.params.productId;
-    Product.findById(productId, (product) => {
-        response.render('shop/product-detail', {
-            path: '/products',
-            pageTitle: product.title,
-            product: product,
+    Product.findById(productId)
+        .then(([product]) => {
+            response.render('shop/product-detail', {
+                path: '/products',
+                pageTitle: product[0].title,
+                product: product[0],
+            });
+        })
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
         });
-    });
 };
 
 module.exports.getIndex = (request, response, next) => {
