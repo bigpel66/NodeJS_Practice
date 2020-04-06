@@ -2,13 +2,19 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 
 module.exports.getProducts = (request, response, next) => {
-    Product.fetchAll((products) => {
-        response.render('shop/product-list', {
-            products: products,
-            pageTitle: 'All Products',
-            path: '/products',
+    Product.fetchAll()
+        .then(([rows, fieldData]) => {
+            response.render('shop/product-list', {
+                products: rows,
+                pageTitle: 'All Products',
+                path: '/products',
+            });
+        })
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
         });
-    });
 };
 
 module.exports.getProduct = (request, response, next) => {
@@ -23,13 +29,19 @@ module.exports.getProduct = (request, response, next) => {
 };
 
 module.exports.getIndex = (request, response, next) => {
-    Product.fetchAll((products) => {
-        response.render('shop/index', {
-            products: products,
-            pageTitle: 'Shop',
-            path: '/',
+    Product.fetchAll()
+        .then(([rows, fieldData]) => {
+            response.render('shop/index', {
+                products: rows,
+                pageTitle: 'Shop',
+                path: '/',
+            });
+        })
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
         });
-    });
 };
 
 module.exports.getCart = (request, response, next) => {
