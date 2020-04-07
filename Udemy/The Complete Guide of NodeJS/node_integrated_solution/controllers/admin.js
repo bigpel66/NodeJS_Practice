@@ -14,12 +14,13 @@ module.exports.postAddProduct = (request, response, next) => {
     const price = request.body.price;
     const description = request.body.description;
 
-    const product = new Product(null, title, imageUrl, description, price);
-    product
-        .save()
-        .then(() => {
-            response.redirect('/');
-        })
+    Product.create({
+        title: title,
+        price: price,
+        imageUrl: imageUrl,
+        description: description,
+    })
+        .then((results) => {})
         .catch((error) => {
             if (error) {
                 console.log(error);
