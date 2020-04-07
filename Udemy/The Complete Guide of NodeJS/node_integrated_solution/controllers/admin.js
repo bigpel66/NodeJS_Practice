@@ -14,13 +14,14 @@ module.exports.postAddProduct = (request, response, next) => {
     const price = request.body.price;
     const description = request.body.description;
 
-    Product.create({
-        title: title,
-        price: price,
-        imageUrl: imageUrl,
-        description: description,
-    })
-        .then((results) => {
+    request.user
+        .createProduct({
+            title: title,
+            price: price,
+            imageUrl: imageUrl,
+            description: description,
+        })
+        .then((product) => {
             response.redirect('/admin/products');
         })
         .catch((error) => {
@@ -28,6 +29,21 @@ module.exports.postAddProduct = (request, response, next) => {
                 console.log(error);
             }
         });
+    // Product.create({
+    //     title: title,
+    //     price: price,
+    //     imageUrl: imageUrl,
+    //     description: description,
+    //     userId: request.user.id,
+    // })
+    //     .then((product) => {
+    //         response.redirect('/admin/products');
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
 };
 
 module.exports.getEditProduct = (request, response, next) => {
@@ -38,12 +54,16 @@ module.exports.getEditProduct = (request, response, next) => {
         response.redirect('/products');
     }
 
-    Product.findByPk(productId)
-        .then((product) => {
-            if (!product) {
+    request.user
+        .getProducts({ where: { id: productId } })
+        .then((products) => {
+            if (!products) {
                 return response.redirect('/');
             }
-            response.render('admin/edit-product', { 
+
+            const product = products[0];
+
+            response.render('admin/edit-product', {
                 path: '/admin/edit-product',
                 pageTitle: 'Edit Product',
                 editing: editing,
@@ -72,7 +92,7 @@ module.exports.postEditProduct = (request, response, next) => {
             product.description = productDescription;
             return product.save();
         })
-        .then((results) => {
+        .then((product) => {
             response.redirect('/admin/products');
         })
         .catch((error) => {
@@ -83,10 +103,11 @@ module.exports.postEditProduct = (request, response, next) => {
 };
 
 module.exports.getProducts = (request, response, next) => {
-    Product.findAll()
-        .then((results) => {
+    request.user
+        .getProducts()
+        .then((products) => {
             response.render('admin/products', {
-                products: results,
+                products: products,
                 pageTitle: 'Admin Products',
                 path: '/admin/products',
             });
@@ -104,7 +125,7 @@ module.exports.postDeleteProduct = (request, response, next) => {
         .then((product) => {
             return product.destroy();
         })
-        .then((results) => {
+        .then((product) => {
             response.redirect('/admin/products');
         })
         .catch((error) => {

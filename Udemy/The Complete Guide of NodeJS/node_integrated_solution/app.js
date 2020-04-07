@@ -21,6 +21,19 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((request, response, next) => {
+    User.findByPk(1)
+        .then((user) => {
+            request.user = user;
+            next();
+        })
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
+        });
+});
+
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
@@ -32,10 +45,19 @@ User.hasMany(Product);
 sequelize
     .sync()
     .then((results) => {
+        return User.findByPk(1);
+    })
+    .then((user) => {
+        if (!user) {
+            return User.create({ name: 'Jason', email: 'bigpel66@gmail.com' });
+        }
+        return user;
+    })
+    .then((user) => {
         app.listen(3000);
     })
     .catch((error) => {
         if (error) {
             console.log(error);
         }
-    });
+    }); 
