@@ -1,5 +1,4 @@
 const Product = require('../models/product');
-const Cart = require('../models/cart');
 
 module.exports.getProducts = (request, response, next) => {
     Product.findAll()
@@ -154,15 +153,55 @@ module.exports.postCartDelete = (request, response, next) => {
 };
 
 module.exports.getOrders = (request, response, next) => {
-    response.render('shop/orders', {
-        pageTitle: 'Your Orders',
-        path: '/orders',
-    });
+    request.user
+        .getOrders({ include: ['products'] })
+        .then((orders) => {
+            response.render('shop/orders', {
+                pageTitle: 'Your Orders',
+                path: '/orders',
+                orders: orders,
+            });
+        })
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
+        });
 };
 
-module.exports.getCheckout = (request, response, next) => {
-    response.render('shop/checkout', {
-        pageTitle: 'Checkout',
-        path: '/checkout',
-    });
+module.exports.postOrder = (request, response, next) => {
+    let fetchedCart;
+    let cartProducts;
+
+    request.user
+        .getCart()
+        .then((cart) => {
+            fetchedCart = cart;
+            return cart.getProducts();
+        })
+        .then((products) => {
+            cartProducts = products;
+            return request.user.createOrder();
+        })
+        .then((order) => {
+            return order.addProducts(
+                cartProducts.map((cartProduct) => {
+                    cartProduct.orderItem = {
+                        quantity: cartProduct.cartItem.quantity,
+                    };
+                    return cartProduct;
+                })
+            );
+        })
+        .then((result) => {
+            return fetchedCart.setProducts(null);
+        })
+        .then((result) => {
+            response.redirect('/orders');
+        })
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
+        });
 };
