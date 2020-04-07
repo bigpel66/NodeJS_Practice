@@ -20,7 +20,9 @@ module.exports.postAddProduct = (request, response, next) => {
         imageUrl: imageUrl,
         description: description,
     })
-        .then((results) => {})
+        .then((results) => {
+            response.redirect('/admin/products');
+        })
         .catch((error) => {
             if (error) {
                 console.log(error);
@@ -41,7 +43,7 @@ module.exports.getEditProduct = (request, response, next) => {
             if (!product) {
                 return response.redirect('/');
             }
-            response.render('admin/edit-product', {
+            response.render('admin/edit-product', { 
                 path: '/admin/edit-product',
                 pageTitle: 'Edit Product',
                 editing: editing,
@@ -98,6 +100,16 @@ module.exports.getProducts = (request, response, next) => {
 
 module.exports.postDeleteProduct = (request, response, next) => {
     const productId = request.body.productId;
-    Product.deleteById(productId);
-    response.redirect('/admin/products');
+    Product.findByPk(productId)
+        .then((product) => {
+            return product.destroy();
+        })
+        .then((results) => {
+            response.redirect('/admin/products');
+        })
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
+        });
 };
