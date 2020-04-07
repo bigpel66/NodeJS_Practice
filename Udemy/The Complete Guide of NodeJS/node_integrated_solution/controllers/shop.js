@@ -19,12 +19,25 @@ module.exports.getProducts = (request, response, next) => {
 
 module.exports.getProduct = (request, response, next) => {
     const productId = request.params.productId;
-    Product.findById(productId)
-        .then(([product]) => {
+    // Product.findByPk(productId)
+    //     .then((product) => {
+    // response.render('shop/product-detail', {
+    //     path: '/products',
+    //     pageTitle: product.title,
+    //     product: product,
+    // });
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+    Product.findAll({ where: { id: productId } })
+        .then((results) => {
             response.render('shop/product-detail', {
                 path: '/products',
-                pageTitle: product[0].title,
-                product: product[0],
+                pageTitle: results[0].title,
+                product: results[0],
             });
         })
         .catch((error) => {
