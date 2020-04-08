@@ -1,3 +1,6 @@
+const mongodb = require('mongodb');
+const ObjectId = mongodb.ObjectId;
+
 const Product = require('../models/product');
 
 module.exports.getProducts = (request, response, next) => {
@@ -148,15 +151,35 @@ module.exports.postEditProduct = (request, response, next) => {
     const productImageUrl = request.body.imageUrl;
     const productDescription = request.body.description;
 
-    Product.findByPk(productId)
-        .then((product) => {
-            product.title = productTitle;
-            product.price = productPrice;
-            product.imageUrl = productImageUrl;
-            product.description = productDescription;
-            return product.save();
-        })
-        .then((product) => {
+    // SEQUELIZE
+    // Product.findByPk(productId)
+    //     .then((product) => {
+    //         product.title = productTitle;
+    //         product.price = productPrice;
+    //         product.imageUrl = productImageUrl;
+    //         product.description = productDescription;
+    //         return product.save();
+    //     })
+    //     .then((product) => {
+    //         response.redirect('/admin/products');
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+
+    const product = new Product(
+        productTitle,
+        productPrice,
+        productDescription,
+        productImageUrl,
+        new ObjectId(productId)
+    );
+
+    product
+        .save()
+        .then((result) => {
             response.redirect('/admin/products');
         })
         .catch((error) => {
