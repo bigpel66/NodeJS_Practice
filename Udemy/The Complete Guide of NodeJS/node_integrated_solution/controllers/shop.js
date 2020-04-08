@@ -136,38 +136,51 @@ module.exports.getCart = (request, response, next) => {
 
 module.exports.postCart = (request, response, nex) => {
     const productId = request.body.productId;
-    let fetchedCart;
-    let newQuantity = 1;
 
-    request.user
-        .getCart()
-        .then((cart) => {
-            fetchedCart = cart;
-            return cart.getProducts({ where: { id: productId } });
-        })
-        .then((products) => {
-            let product;
+    //SEQUELIZE
+    // let fetchedCart;
+    // let newQuantity = 1;
 
-            if (products.length > 0) {
-                product = products[0];
-            }
+    // request.user
+    //     .getCart()
+    //     .then((cart) => {
+    //         fetchedCart = cart;
+    //         return cart.getProducts({ where: { id: productId } });
+    //     })
+    //     .then((products) => {
+    //         let product;
 
-            if (product) {
-                const oldQuantity = product.cartItem.quantity;
-                newQuantity += oldQuantity;
-                return product;
-            }
+    //         if (products.length > 0) {
+    //             product = products[0];
+    //         }
 
-            return Product.findByPk(productId);
-        })
+    //         if (product) {
+    //             const oldQuantity = product.cartItem.quantity;
+    //             newQuantity += oldQuantity;
+    //             return product;
+    //         }
+
+    //         return Product.findByPk(productId);
+    //     })
+    //     .then((product) => {
+    //         fetchedCart.addProduct(product, {
+    //             through: { quantity: newQuantity },
+    //         });
+    //     })
+    //     .then(() => {
+    //         response.redirect('/cart');
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+
+    Product.findById(productId)
         .then((product) => {
-            fetchedCart.addProduct(product, {
-                through: { quantity: newQuantity },
-            });
+            return request.user.addToCart(product);
         })
-        .then(() => {
-            response.redirect('/cart');
-        })
+        .then((result) => {})
         .catch((error) => {
             if (error) {
                 console.log(error);
