@@ -33,25 +33,41 @@ module.exports.getProducts = (request, response, next) => {
 
 module.exports.getProduct = (request, response, next) => {
     const productId = request.params.productId;
-    // Product.findByPk(productId)
-    //     .then((product) => {
-    // response.render('shop/product-detail', {
-    //     path: '/products',
-    //     pageTitle: product.title,
-    //     product: product,
-    // });
+
+    // SEQUELIZE
+    // // Product.findByPk(productId)
+    // //     .then((product) => {
+    // // response.render('shop/product-detail', {
+    // //     path: '/products',
+    // //     pageTitle: product.title,
+    // //     product: product,
+    // // });
+    // //     })
+    // //     .catch((error) => {
+    // //         if (error) {
+    // //             console.log(error);
+    // //         }
+    // //     });
+    // Product.findAll({ where: { id: productId } })
+    //     .then((results) => {
+    //         response.render('shop/product-detail', {
+    //             path: '/products',
+    //             pageTitle: results[0].title,
+    //             product: results[0],
+    //         });
     //     })
     //     .catch((error) => {
     //         if (error) {
     //             console.log(error);
     //         }
     //     });
-    Product.findAll({ where: { id: productId } })
-        .then((results) => {
+
+    Product.findById(productId)
+        .then((product) => {
             response.render('shop/product-detail', {
+                product: product,
+                pageTitle: product.title,
                 path: '/products',
-                pageTitle: results[0].title,
-                product: results[0],
             });
         })
         .catch((error) => {
