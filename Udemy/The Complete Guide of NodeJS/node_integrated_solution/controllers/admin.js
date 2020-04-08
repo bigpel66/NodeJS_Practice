@@ -1,6 +1,3 @@
-const mongodb = require('mongodb');
-const ObjectId = mongodb.ObjectId;
-
 const Product = require('../models/product');
 
 module.exports.getProducts = (request, response, next) => {
@@ -174,7 +171,7 @@ module.exports.postEditProduct = (request, response, next) => {
         productPrice,
         productDescription,
         productImageUrl,
-        new ObjectId(productId)
+        productId
     );
 
     product
@@ -191,11 +188,23 @@ module.exports.postEditProduct = (request, response, next) => {
 
 module.exports.postDeleteProduct = (request, response, next) => {
     const productId = request.body.productId;
-    Product.findByPk(productId)
-        .then((product) => {
-            return product.destroy();
-        })
-        .then((product) => {
+
+    // SEQUELIZE
+    // Product.findByPk(productId)
+    //     .then((product) => {
+    //         return product.destroy();
+    //     })
+    //     .then((product) => {
+    //         response.redirect('/admin/products');
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+
+    Product.deleteById(productId)
+        .then((result) => {
             response.redirect('/admin/products');
         })
         .catch((error) => {
