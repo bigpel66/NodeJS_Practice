@@ -16,6 +16,8 @@ const shopRoutes = require('./routes/shop');
 // const Order = require('./models/order');
 // const OrderItem = require('./models/order-item');
 
+const User = require('./models/user');
+
 const mongoConnect = require('./helpers/database').mongoConnect;
 
 const errorController = require('./controllers/error');
@@ -43,7 +45,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 // });
 
 app.use((request, response, next) => {
-    next();
+    User.findById('5e8dd5a409c4a2179d90a37a')
+        .then((user) => {
+            request.user = user;
+            next();
+        })
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
+        });
 });
 
 app.use('/admin', adminRoutes);

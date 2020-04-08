@@ -78,7 +78,15 @@ module.exports.postAddProduct = (request, response, next) => {
     // //         }
     // //     });
 
-    const product = new Product(title, price, description, imageUrl);
+    const userId = request.user._id;
+    const product = new Product(
+        title,
+        price,
+        description,
+        imageUrl,
+        null,
+        userId
+    );
     product
         .save()
         .then((results) => {
@@ -166,12 +174,14 @@ module.exports.postEditProduct = (request, response, next) => {
     //         }
     //     });
 
+    const userId = request.user._id;
     const product = new Product(
         productTitle,
         productPrice,
         productDescription,
         productImageUrl,
-        productId
+        productId,
+        userId
     );
 
     product
