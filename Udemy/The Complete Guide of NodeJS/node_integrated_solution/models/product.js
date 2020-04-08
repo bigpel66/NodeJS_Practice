@@ -34,11 +34,10 @@ class Product {
 
     save() {
         const db = getDb();
-        db.collection('products')
+        return db
+            .collection('products')
             .insertOne(this)
-            .then((results) => {
-                console.log(results);
-            })
+            .then((results) => {})
             .catch((error) => {
                 if (error) {
                     console.log(error);
@@ -53,7 +52,6 @@ class Product {
             .find()
             .toArray()
             .then((products) => {
-                console.log(products);
                 return products;
             })
             .catch((error) => {
@@ -70,7 +68,6 @@ class Product {
             .find({ _id: new mongodb.ObjectId(productId) })
             .next()
             .then((product) => {
-                console.log(product);
                 return product;
             })
             .catch((error) => {

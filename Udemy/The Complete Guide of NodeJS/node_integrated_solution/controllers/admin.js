@@ -1,5 +1,37 @@
 const Product = require('../models/product');
 
+module.exports.getProducts = (request, response, next) => {
+    // SEQUELIZE
+    // request.user
+    //     .getProducts()
+    //     .then((products) => {
+    //         response.render('admin/products', {
+    //             products: products,
+    //             pageTitle: 'Admin Products',
+    //             path: '/admin/products',
+    //         });
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+
+    Product.fetchAll()
+        .then((products) => {
+            response.render('admin/products', {
+                products: products,
+                pageTitle: 'Admin Products',
+                path: '/admin/products',
+            });
+        })
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
+        });
+};
+
 module.exports.getAddProduct = (requset, response, next) => {
     response.render('admin/edit-product', {
         path: '/admin/add-product',
@@ -49,7 +81,9 @@ module.exports.postAddProduct = (request, response, next) => {
     const product = new Product(title, price, description, imageUrl);
     product
         .save()
-        .then((results) => response.redirect('/admin/products'))
+        .then((results) => {
+            response.redirect('/admin/products');
+        })
         .catch((error) => {
             if (error) {
                 console.log(error);
@@ -65,18 +99,37 @@ module.exports.getEditProduct = (request, response, next) => {
         response.redirect('/products');
     }
 
-    request.user
-        .getProducts({ where: { id: productId } })
-        .then((products) => {
-            if (!products) {
+    // SEQUELIZE
+    // request.user
+    //     .getProducts({ where: { id: productId } })
+    //     .then((products) => {
+    //         if (!products) {
+    //             return response.redirect('/');
+    //         }
+
+    //         const product = products[0];
+
+    //         response.render('admin/edit-product', {
+    //             path: '/admin/edit-product',
+    //             pageTitle: 'Edit Product',
+    //             editing: editing,
+    //             product: product,
+    //         });
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+    Product.findById(productId)
+        .then((product) => {
+            if (!product) {
                 return response.redirect('/');
             }
 
-            const product = products[0];
-
             response.render('admin/edit-product', {
-                path: '/admin/edit-product',
                 pageTitle: 'Edit Product',
+                path: '/admin/edit-product',
                 editing: editing,
                 product: product,
             });
@@ -105,23 +158,6 @@ module.exports.postEditProduct = (request, response, next) => {
         })
         .then((product) => {
             response.redirect('/admin/products');
-        })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
-            }
-        });
-};
-
-module.exports.getProducts = (request, response, next) => {
-    request.user
-        .getProducts()
-        .then((products) => {
-            response.render('admin/products', {
-                products: products,
-                pageTitle: 'Admin Products',
-                path: '/admin/products',
-            });
         })
         .catch((error) => {
             if (error) {
