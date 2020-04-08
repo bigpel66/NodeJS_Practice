@@ -14,28 +14,14 @@ module.exports.postAddProduct = (request, response, next) => {
     const price = request.body.price;
     const description = request.body.description;
 
-    request.user
-        .createProduct({
-            title: title,
-            price: price,
-            imageUrl: imageUrl,
-            description: description,
-        })
-        .then((product) => {
-            response.redirect('/admin/products');
-        })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
-            }
-        });
-    // Product.create({
-    //     title: title,
-    //     price: price,
-    //     imageUrl: imageUrl,
-    //     description: description,
-    //     userId: request.user.id,
-    // })
+    // SEQUELIZE
+    // request.user
+    //     .createProduct({
+    //         title: title,
+    //         price: price,
+    //         imageUrl: imageUrl,
+    //         description: description,
+    //     })
     //     .then((product) => {
     //         response.redirect('/admin/products');
     //     })
@@ -44,6 +30,31 @@ module.exports.postAddProduct = (request, response, next) => {
     //             console.log(error);
     //         }
     //     });
+    // // Product.create({
+    // //     title: title,
+    // //     price: price,
+    // //     imageUrl: imageUrl,
+    // //     description: description,
+    // //     userId: request.user.id,
+    // // })
+    // //     .then((product) => {
+    // //         response.redirect('/admin/products');
+    // //     })
+    // //     .catch((error) => {
+    // //         if (error) {
+    // //             console.log(error);
+    // //         }
+    // //     });
+
+    const product = new Product(title, price, description, imageUrl);
+    product
+        .save()
+        .then((results) => response.redirect('/admin/products'))
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
+        });
 };
 
 module.exports.getEditProduct = (request, response, next) => {

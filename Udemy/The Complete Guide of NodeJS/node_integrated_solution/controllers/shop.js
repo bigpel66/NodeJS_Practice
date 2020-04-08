@@ -1,10 +1,25 @@
 const Product = require('../models/product');
 
 module.exports.getProducts = (request, response, next) => {
-    Product.findAll()
-        .then((results) => {
+    // SEQUELIZE
+    // Product.findAll()
+    //     .then((results) => {
+    //         response.render('shop/product-list', {
+    //             products: results,
+    //             pageTitle: 'All Products',
+    //             path: '/products',
+    //         });
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+
+    Product.fetchAll()
+        .then((products) => {
             response.render('shop/product-list', {
-                products: results,
+                products: products,
                 pageTitle: 'All Products',
                 path: '/products',
             });
@@ -47,10 +62,25 @@ module.exports.getProduct = (request, response, next) => {
 };
 
 module.exports.getIndex = (request, response, next) => {
-    Product.findAll()
-        .then((results) => {
+    // SEQUELIZE
+    // Product.findAll()
+    //     .then((results) => {
+    //         response.render('shop/index', {
+    //             products: results,
+    //             pageTitle: 'Shop',
+    //             path: '/',
+    //         });
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+
+    Product.fetchAll()
+        .then((products) => {
             response.render('shop/index', {
-                products: results,
+                products: products,
                 pageTitle: 'Shop',
                 path: '/',
             });
