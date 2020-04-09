@@ -151,7 +151,11 @@ class User {
 
         return db
             .collection('orders')
-            .then()
+            .find({ 'user.id': this._id })
+            .toArray()
+            .then((orders) => {
+                return orders;
+            })
             .catch((error) => {
                 if (error) {
                     console.log(error);

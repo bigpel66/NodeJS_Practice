@@ -256,6 +256,21 @@ module.exports.getOrders = (request, response, next) => {
     //             console.log(error);
     //         }
     //     });
+
+    request.user
+        .getOrders()
+        .then((orders) => {
+            response.render('shop/orders', {
+                pageTitle: 'Your Orders',
+                path: '/orders',
+                orders: orders,
+            });
+        })
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
+        });
 };
 
 module.exports.postOrder = (request, response, next) => {
