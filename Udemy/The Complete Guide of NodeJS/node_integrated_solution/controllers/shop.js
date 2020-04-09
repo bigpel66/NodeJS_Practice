@@ -109,23 +109,39 @@ module.exports.getIndex = (request, response, next) => {
 };
 
 module.exports.getCart = (request, response, next) => {
+    // SEQUELIZE
+    // request.user
+    //     .getCart()
+    //     .then((cart) => {
+    //         return cart
+    //             .getProducts()
+    //             .then((products) => {
+    //                 response.render('shop/cart', {
+    //                     path: '/cart',
+    //                     pageTitle: 'Your Cart',
+    //                     products: products,
+    //                 });
+    //             })
+    //             .catch((error) => {
+    //                 if (error) {
+    //                     console.log(error);
+    //                 }
+    //             });
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+
     request.user
         .getCart()
-        .then((cart) => {
-            return cart
-                .getProducts()
-                .then((products) => {
-                    response.render('shop/cart', {
-                        path: '/cart',
-                        pageTitle: 'Your Cart',
-                        products: products,
-                    });
-                })
-                .catch((error) => {
-                    if (error) {
-                        console.log(error);
-                    }
-                });
+        .then((products) => {
+            response.render('shop/cart', {
+                pageTitle: 'Your Cart',
+                path: '/cart',
+                products: products,
+            });
         })
         .catch((error) => {
             if (error) {
@@ -180,7 +196,9 @@ module.exports.postCart = (request, response, nex) => {
         .then((product) => {
             return request.user.addToCart(product);
         })
-        .then((result) => {})
+        .then((result) => {
+            response.redirect('/cart');
+        })
         .catch((error) => {
             if (error) {
                 console.log(error);
