@@ -3,8 +3,8 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const adminRoutes = require('./routes/admin');
-const shopRoutes = require('./routes/shop');
+// const adminRoutes = require('./routes/admin');
+// const shopRoutes = require('./routes/shop');
 
 // SEQUELIZE MODELS
 // const sequelize = require('./helpers/database');
@@ -16,9 +16,12 @@ const shopRoutes = require('./routes/shop');
 // const Order = require('./models/order');
 // const OrderItem = require('./models/order-item');
 
-const User = require('./models/user');
+// MONGODB CONNECTOR
+// const mongoConnect = require('./helpers/database').mongoConnect;
 
-const mongoConnect = require('./helpers/database').mongoConnect;
+// const User = require('./models/user');
+
+const mongoose = require('mongoose');
 
 const errorController = require('./controllers/error');
 
@@ -44,21 +47,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 //         });
 // });
 
-app.use((request, response, next) => {
-    User.findById('5e8dd5a409c4a2179d90a37a')
-        .then((user) => {
-            request.user = new User(user.name, user.email, user.cart, user._id);
-            next();
-        })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
-            }
-        });
-});
+// MONGODB USER IN REQUEST
+// app.use((request, response, next) => {
+//     User.findById('5e8dd5a409c4a2179d90a37a')
+//         .then((user) => {
+//             request.user = new User(user.name, user.email, user.cart, user._id);
+//             next();
+//         })
+//         .catch((error) => {
+//             if (error) {
+//                 console.log(error);
+//             }
+//         });
+// });
 
-app.use('/admin', adminRoutes);
-app.use(shopRoutes);
+// app.use('/admin', adminRoutes);
+// app.use(shopRoutes);
 
 app.use(errorController.get404);
 
@@ -103,6 +107,20 @@ app.use(errorController.get404);
 //         }
 //     });
 
-mongoConnect(() => {
-    app.listen(3000);
-});
+// MONGODB CONNECT
+// mongoConnect(() => {
+//     app.listen(3000);
+// });
+
+mongoose
+    .connect(
+        'mongodb+srv://bigpel66:JasonSeo@cluster0-2e6no.mongodb.net/test?retryWrites=true&w=majority'
+    )
+    .then((result) => {
+        app.listen(3000);
+    })
+    .catch((error) => {
+        if (error) {
+            console.log(error);
+        }
+    });
