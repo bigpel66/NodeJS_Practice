@@ -209,16 +209,27 @@ module.exports.postCart = (request, response, nex) => {
 module.exports.postCartDelete = (request, response, next) => {
     const productId = request.body.productId;
 
-    request.user
-        .getCart()
-        .then((cart) => {
-            return cart.getProducts({ where: { id: productId } });
-        })
-        .then((products) => {
-            const product = products[0];
+    // request.user
+    //     .getCart()
+    //     .then((cart) => {
+    //         return cart.getProducts({ where: { id: productId } });
+    //     })
+    //     .then((products) => {
+    //         const product = products[0];
 
-            return product.cartItem.destroy();
-        })
+    //         return product.cartItem.destroy();
+    //     })
+    //     .then((result) => {
+    //         response.redirect('/cart');
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+
+    request.user
+        .deleteItemFromCart(productId)
         .then((result) => {
             response.redirect('/cart');
         })

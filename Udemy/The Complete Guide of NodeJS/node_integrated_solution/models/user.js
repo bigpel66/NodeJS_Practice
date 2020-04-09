@@ -99,6 +99,21 @@ class User {
             .updateOne({ _id: this._id }, { $set: { cart: updatedCart } });
     }
 
+    deleteItemFromCart(productId) {
+        const existingProducts = this.cart.items.filter((item) => {
+            return item.productId.toString() !== productId.toString();
+        });
+
+        const db = getDb();
+
+        return db
+            .collection('users')
+            .updateOne(
+                { _id: this._id },
+                { $set: { cart: { items: existingProducts } } }
+            );
+    }
+
     static findById(userId) {
         const db = getDb();
 
