@@ -114,6 +114,28 @@ class User {
             );
     }
 
+    addOrder() {
+        const db = getDb();
+        return db
+            .collection('orders')
+            .insertOne(this.cart)
+            .then((result) => {
+                this.cart = { items: [] };
+
+                return db
+                    .collection('users')
+                    .updateOne(
+                        { _id: this._id },
+                        { $set: { cart: this.cart } }
+                    );
+            })
+            .catch((error) => {
+                if (error) {
+                    console.log(error);
+                }
+            });
+    }
+
     static findById(userId) {
         const db = getDb();
 
