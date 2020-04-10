@@ -15,8 +15,22 @@ module.exports.getProducts = (request, response, next) => {
     //             console.log(error);
     //         }
     //     });
+    // MONGODB
+    // Product.fetchAll()
+    //     .then((products) => {
+    //         response.render('shop/product-list', {
+    //             products: products,
+    //             pageTitle: 'All Products',
+    //             path: '/products',
+    //         });
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
 
-    Product.fetchAll()
+    Product.find()
         .then((products) => {
             response.render('shop/product-list', {
                 products: products,
@@ -92,8 +106,22 @@ module.exports.getIndex = (request, response, next) => {
     //             console.log(error);
     //         }
     //     });
+    // MONGODB
+    // Product.fetchAll()
+    //     .then((products) => {
+    //         response.render('shop/index', {
+    //             products: products,
+    //             pageTitle: 'Shop',
+    //             path: '/',
+    //         });
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
 
-    Product.fetchAll()
+    Product.find()
         .then((products) => {
             response.render('shop/index', {
                 products: products,
