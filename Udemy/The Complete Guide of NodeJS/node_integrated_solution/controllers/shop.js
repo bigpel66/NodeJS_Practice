@@ -344,6 +344,20 @@ module.exports.getOrders = (request, response, next) => {
     //             console.log(error);
     //         }
     //     });
+
+    Order.find({ 'user.userId': request.user })
+        .then((orders) => {
+            response.render('shop/orders', {
+                path: '/orders',
+                pageTitle: 'Your Orders',
+                orders: orders,
+            });
+        })
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
+        });
 };
 
 module.exports.postOrder = (request, response, next) => {
