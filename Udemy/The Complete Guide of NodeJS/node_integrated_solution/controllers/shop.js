@@ -288,8 +288,20 @@ module.exports.postCartDelete = (request, response, next) => {
     //         }
     //     });
 
+    // MONGODB
+    // request.user
+    //     .deleteItemFromCart(productId)
+    //     .then((result) => {
+    //         response.redirect('/cart');
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+
     request.user
-        .deleteItemFromCart(productId)
+        .removeFromCart(productId)
         .then((result) => {
             response.redirect('/cart');
         })
