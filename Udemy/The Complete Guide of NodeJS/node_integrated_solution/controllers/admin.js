@@ -40,6 +40,7 @@ module.exports.getProducts = (request, response, next) => {
                 products: products,
                 pageTitle: 'Admin Products',
                 path: '/admin/products',
+                isLoggedIn: request.isLoggedIn,
             });
         })
         .catch((error) => {
@@ -54,6 +55,7 @@ module.exports.getAddProduct = (requset, response, next) => {
         path: '/admin/add-product',
         pageTitle: 'Add-Product',
         editing: 'false',
+        isLoggedIn: request.isLoggedIn,
     });
 };
 
@@ -177,6 +179,7 @@ module.exports.getEditProduct = (request, response, next) => {
                 path: '/admin/edit-product',
                 editing: editing,
                 product: product,
+                isLoggedIn: request.isLoggedIn,
             });
         })
         .catch((error) => {

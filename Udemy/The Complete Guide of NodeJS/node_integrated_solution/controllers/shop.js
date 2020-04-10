@@ -37,6 +37,7 @@ module.exports.getProducts = (request, response, next) => {
                 products: products,
                 pageTitle: 'All Products',
                 path: '/products',
+                isLoggedIn: request.isLoggedIn,
             });
         })
         .catch((error) => {
@@ -83,6 +84,7 @@ module.exports.getProduct = (request, response, next) => {
                 product: product,
                 pageTitle: product.title,
                 path: '/products',
+                isLoggedIn: request.isLoggedIn,
             });
         })
         .catch((error) => {
@@ -128,6 +130,7 @@ module.exports.getIndex = (request, response, next) => {
                 products: products,
                 pageTitle: 'Shop',
                 path: '/',
+                isLoggedIn: request.isLoggedIn,
             });
         })
         .catch((error) => {
@@ -188,6 +191,7 @@ module.exports.getCart = (request, response, next) => {
                 pageTitle: 'Your Cart',
                 path: '/cart',
                 products: products,
+                isLoggedIn: request.isLoggedIn,
             });
         })
         .catch((error) => {
@@ -351,6 +355,7 @@ module.exports.getOrders = (request, response, next) => {
                 path: '/orders',
                 pageTitle: 'Your Orders',
                 orders: orders,
+                isLoggedIn: request.isLoggedIn,
             });
         })
         .catch((error) => {
