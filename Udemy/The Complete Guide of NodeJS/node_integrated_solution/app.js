@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
 
 // SEQUELIZE MODELS
 // const sequelize = require('./helpers/database');
@@ -77,6 +78,7 @@ app.use((request, response, next) => {
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 
 app.use(errorController.get404);
 
