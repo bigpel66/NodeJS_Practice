@@ -220,6 +220,20 @@ module.exports.postCart = (request, response, nex) => {
     //         }
     //     });
 
+    // MONGODB
+    // Product.findById(productId)
+    //     .then((product) => {
+    //         return request.user.addToCart(product);
+    //     })
+    //     .then((result) => {
+    //         response.redirect('/cart');
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+
     Product.findById(productId)
         .then((product) => {
             return request.user.addToCart(product);
