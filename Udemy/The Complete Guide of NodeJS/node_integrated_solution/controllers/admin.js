@@ -16,8 +16,22 @@ module.exports.getProducts = (request, response, next) => {
     //             console.log(error);
     //         }
     //     });
+    // MONGODB
+    // Product.fetchAll()
+    //     .then((products) => {
+    //         response.render('admin/products', {
+    //             products: products,
+    //             pageTitle: 'Admin Products',
+    //             path: '/admin/products',
+    //         });
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
 
-    Product.fetchAll()
+    Product.find()
         .then((products) => {
             response.render('admin/products', {
                 products: products,
@@ -191,18 +205,37 @@ module.exports.postEditProduct = (request, response, next) => {
     //         }
     //     });
 
-    const userId = request.user._id;
-    const product = new Product(
-        productTitle,
-        productPrice,
-        productDescription,
-        productImageUrl,
-        productId,
-        userId
-    );
+    // MONGODB
+    // const userId = request.user._id;
+    // const product = new Product(
+    //     productTitle,
+    //     productPrice,
+    //     productDescription,
+    //     productImageUrl,
+    //     productId,
+    //     userId
+    // );
 
-    product
-        .save()
+    // product
+    //     .save()
+    //     .then((result) => {
+    //         response.redirect('/admin/products');
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+
+    Product.findById(productId)
+        .then((product) => {
+            product.title = productTitle;
+            product.price = productPrice;
+            product.description = productDescription;
+            product.imageUrl = productImageUrl;
+
+            return product.save();
+        })
         .then((result) => {
             response.redirect('/admin/products');
         })
