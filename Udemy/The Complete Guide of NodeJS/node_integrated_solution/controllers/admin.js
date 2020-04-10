@@ -32,7 +32,10 @@ module.exports.getProducts = (request, response, next) => {
     //     });
 
     Product.find()
+        // .select('title price -_id')
+        // .populate('userId', 'name')
         .then((products) => {
+            console.log(products);
             response.render('admin/products', {
                 products: products,
                 pageTitle: 'Admin Products',
@@ -118,11 +121,14 @@ module.exports.postAddProduct = (request, response, next) => {
         price: price,
         description: description,
         imageUrl: imageUrl,
+        userId: request.user,
     });
 
     product
         .save()
-        .then()
+        .then((result) => {
+            response.redirect('/admin/products');
+        })
         .catch((error) => {
             if (error) {
                 console.log(error);
