@@ -224,7 +224,7 @@ userSchema.methods.addToCart = function (product) {
     const updatedCart = { items: existingProducts };
 
     this.cart = updatedCart;
-    
+
     return this.save();
 };
 

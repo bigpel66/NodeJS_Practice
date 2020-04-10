@@ -161,10 +161,28 @@ module.exports.getCart = (request, response, next) => {
     //             console.log(error);
     //         }
     //     });
+    // MONGODB
+    // request.user
+    //     .getCart()
+    //     .then((products) => {
+    //         response.render('shop/cart', {
+    //             pageTitle: 'Your Cart',
+    //             path: '/cart',
+    //             products: products,
+    //         });
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
 
     request.user
-        .getCart()
-        .then((products) => {
+        .populate('cart.items.productId')
+        .execPopulate()
+        .then((user) => {
+            const products = [...user.cart.items];
+
             response.render('shop/cart', {
                 pageTitle: 'Your Cart',
                 path: '/cart',
