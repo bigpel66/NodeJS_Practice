@@ -22,6 +22,7 @@ const shopRoutes = require('./routes/shop');
 // const User = require('./models/user');
 
 const mongoose = require('mongoose');
+const User = require('./models/user');
 
 const errorController = require('./controllers/error');
 
@@ -60,6 +61,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 //             }
 //         });
 // });
+
+app.use((request, response, next) => {
+    User.findOne()
+        .then((user) => {
+            request.user = user;
+            next();
+        })
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
+        });
+});
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
@@ -116,6 +130,22 @@ mongoose
     .connect(
         'mongodb+srv://bigpel66:JasonSeo@cluster0-2e6no.mongodb.net/shop?retryWrites=true&w=majority'
     )
+    .then((result) => {
+        User.findOne()
+            .then((user) => {
+                if (!user) {
+                    const newUser = new User({
+                        name: 'Jason Seo',
+                        email: 'bigpel66@gmail.com',
+                        cart: { items: [] },
+                    });
+                    return newUser.save();
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    })
     .then((result) => {
         app.listen(3000);
     })
