@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Order = require('../models/order');
 
 module.exports.getProducts = (request, response, next) => {
     // SEQUELIZE
@@ -328,28 +329,27 @@ module.exports.getOrders = (request, response, next) => {
     //             console.log(error);
     //         }
     //     });
-
-    request.user
-        .getOrders()
-        .then((orders) => {
-            response.render('shop/orders', {
-                pageTitle: 'Your Orders',
-                path: '/orders',
-                orders: orders,
-            });
-        })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
-            }
-        });
+    // MONGODB
+    // request.user
+    //     .getOrders()
+    //     .then((orders) => {
+    //         response.render('shop/orders', {
+    //             pageTitle: 'Your Orders',
+    //             path: '/orders',
+    //             orders: orders,
+    //         });
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
 };
 
 module.exports.postOrder = (request, response, next) => {
     // SEQUELIZE
     // let fetchedCart;
     // let cartProducts;
-
     //     request.user
     //         .getCart()
     //         .then((cart) => {
@@ -381,12 +381,43 @@ module.exports.postOrder = (request, response, next) => {
     //                 console.log(error);
     //             }
     //         });
+    // MONGODB
+    // request.user
+    //     .addOrder()
+    //     .then((result) => {
+    //         response.redirect('/order');
+    //     })
+    //     .catch((error) => {
+    //         console.log(error);
+    //     });
+
     request.user
-        .addOrder()
+        .populate('cart.items.productId')
+        .execPopulate()
+        .then((user) => {
+            const products = user.cart.items.map((item) => {
+                return {
+                    quantity: item.quantity,
+                    product: { ...item.productId._doc },
+                };
+            });
+
+            const order = new Order({
+                user: { name: request.user.name, userId: request.user },
+                products: products,
+            });
+
+            return order.save();
+        })
         .then((result) => {
-            response.redirect('/order');
+            return request.user.clearCart();
+        })
+        .then((result) => {
+            response.redirect('/orders');
         })
         .catch((error) => {
-            console.log(error);
+            if (error) {
+                console.log(error);
+            }
         });
 };
