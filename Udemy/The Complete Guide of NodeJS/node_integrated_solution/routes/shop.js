@@ -20,4 +20,4 @@ const router = express.Router();
 
 // router.post('/create-order', shopController.postOrder);
 
-// module.exports = router;
+module.exports = router;

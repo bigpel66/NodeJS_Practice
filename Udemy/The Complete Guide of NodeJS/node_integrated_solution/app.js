@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-// const adminRoutes = require('./routes/admin');
+const adminRoutes = require('./routes/admin');
 // const shopRoutes = require('./routes/shop');
 
 // SEQUELIZE MODELS
@@ -61,7 +61,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //         });
 // });
 
-// app.use('/admin', adminRoutes);
+app.use('/admin', adminRoutes);
 // app.use(shopRoutes);
 
 app.use(errorController.get404);
@@ -114,7 +114,7 @@ app.use(errorController.get404);
 
 mongoose
     .connect(
-        'mongodb+srv://bigpel66:JasonSeo@cluster0-2e6no.mongodb.net/test?retryWrites=true&w=majority'
+        'mongodb+srv://bigpel66:JasonSeo@cluster0-2e6no.mongodb.net/shop?retryWrites=true&w=majority'
     )
     .then((result) => {
         app.listen(3000);

@@ -78,20 +78,37 @@ module.exports.postAddProduct = (request, response, next) => {
     // //         }
     // //     });
 
-    const userId = request.user._id;
-    const product = new Product(
-        title,
-        price,
-        description,
-        imageUrl,
-        null,
-        userId
-    );
+    // MONGODB
+    // const userId = request.user._id;
+    // const product = new Product(
+    //     title,
+    //     price,
+    //     description,
+    //     imageUrl,
+    //     null,
+    //     userId
+    // );
+    // product
+    //     .save()
+    //     .then((results) => {
+    //         response.redirect('/admin/products');
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+
+    const product = new Product({
+        title: title,
+        price: price,
+        description: description,
+        imageUrl: imageUrl,
+    });
+
     product
         .save()
-        .then((results) => {
-            response.redirect('/admin/products');
-        })
+        .then()
         .catch((error) => {
             if (error) {
                 console.log(error);
