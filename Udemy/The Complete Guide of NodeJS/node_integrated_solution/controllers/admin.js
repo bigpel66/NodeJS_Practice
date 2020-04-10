@@ -263,7 +263,18 @@ module.exports.postDeleteProduct = (request, response, next) => {
     //         }
     //     });
 
-    Product.deleteById(productId)
+    // MONGODB
+    // Product.deleteById(productId)
+    //     .then((result) => {
+    //         response.redirect('/admin/products');
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+
+    Product.findByIdAndRemove(productId)
         .then((result) => {
             response.redirect('/admin/products');
         })
