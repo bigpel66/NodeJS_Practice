@@ -9,6 +9,7 @@ module.exports.getLogin = (request, response, next) => {
 };
 
 module.exports.postLogin = (request, response, next) => {
-    response.setHeader('Set-Cookie', 'loggedIn=true');
+    // response.setHeader('Set-Cookie', 'loggedIn=true');
+    request.session.isLoggedIn = true;
     response.redirect('/');
 };

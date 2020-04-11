@@ -230,8 +230,6 @@ userSchema.methods.addToCart = function (product) {
 
 userSchema.methods.removeFromCart = function (productId) {
     const existingProducts = this.cart.items.filter((item) => {
-        console.log(item.productId.toString());
-        console.log(productId.toString());
         return item.productId.toString() !== productId.toString();
     });
 
