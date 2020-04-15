@@ -65,6 +65,12 @@ app.use(csurfProtection);
 app.use(flash());
 
 app.use((request, response, next) => {
+    response.locals.isLoggedIn = request.session.isLoggedIn;
+    response.locals.csrfToken = request.csrfToken();
+    next();
+});
+
+app.use((request, response, next) => {
     if (!request.session.user) {
         return next();
     }
@@ -77,8 +83,10 @@ app.use((request, response, next) => {
             request.user = user;
             next();
         })
-        .catch((error) => {
-            throw new Error(error);
+        .catch((err) => {
+            if (err) {
+                next(new Error(err));
+            }
         });
 });
 
@@ -115,12 +123,6 @@ app.use((request, response, next) => {
 //         });
 // });
 
-app.use((request, response, next) => {
-    response.locals.isLoggedIn = request.session.isLoggedIn;
-    response.locals.csrfToken = request.csrfToken();
-    next();
-});
-
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
@@ -129,7 +131,10 @@ app.get('/500', errorController.get500);
 app.use(errorController.get404);
 
 app.use((error, request, response, next) => {
-    response.render('/500');
+    response.status(500).render('500', {
+        path: '/500',
+        pageTitle: 'Error!',
+    });
 });
 
 // SEQUELIZE ASSOCIATION
