@@ -4,3 +4,10 @@ module.exports.get404 = (request, response, next) => {
         pageTitle: 'Page Not Found',
     });
 };
+
+module.exports.get500 = (request, response, next) => {
+    response.status(500).render('500', {
+        path: '/500',
+        pageTitle: 'Error!',
+    });
+};

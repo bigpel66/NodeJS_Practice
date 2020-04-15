@@ -153,7 +153,27 @@ module.exports.postAddProduct = (request, response, next) => {
         })
         .catch((error) => {
             if (error) {
-                console.log(error);
+                // Redundant Code on Error
+                // return response.status(500).render('admin/edit-product', {
+                //     pageTitle: 'Add Product',
+                //     path: '/admin/add-product',
+                //     editing: 'false',
+                //     hasError: true,
+                //     product: {
+                //         tile: title,
+                //         imageUrl: imageUrl,
+                //         description: description,
+                //         price: price,
+                //     },
+                //     errorMessage:
+                //         'Database Operation Failed, Please Try Again!',
+                //     validatonErrors: [],
+                // });
+                // Also Redundant Codes on Error
+                // return response.redirect('/500');
+                const error = new Error('error');
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };

@@ -71,13 +71,14 @@ app.use((request, response, next) => {
 
     User.findById(request.session.user._id)
         .then((user) => {
+            if (!user) {
+                return next();
+            }
             request.user = user;
             next();
         })
         .catch((error) => {
-            if (error) {
-                console.log(error);
-            }
+            throw new Error(error);
         });
 });
 
@@ -124,7 +125,12 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+app.get('/500', errorController.get500);
 app.use(errorController.get404);
+
+app.use((error, request, response, next) => {
+    response.render('/500');
+});
 
 // SEQUELIZE ASSOCIATION
 // Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
