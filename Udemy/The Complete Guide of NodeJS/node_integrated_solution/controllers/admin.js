@@ -1,5 +1,7 @@
 const Product = require('../models/product');
 
+const { validationResult } = require('express-validator/check');
+
 module.exports.getProducts = (request, response, next) => {
     // SEQUELIZE
     // request.user
@@ -31,16 +33,14 @@ module.exports.getProducts = (request, response, next) => {
     //         }
     //     });
 
-    Product.find()
+    Product.find({ userId: request.user._id })
         // .select('title price -_id')
         // .populate('userId', 'name')
         .then((products) => {
-            console.log(products);
             response.render('admin/products', {
                 products: products,
                 pageTitle: 'Admin Products',
                 path: '/admin/products',
-                isLoggedIn: request.isLoggedIn,
             });
         })
         .catch((error) => {
@@ -50,12 +50,14 @@ module.exports.getProducts = (request, response, next) => {
         });
 };
 
-module.exports.getAddProduct = (requset, response, next) => {
+module.exports.getAddProduct = (request, response, next) => {
     response.render('admin/edit-product', {
         path: '/admin/add-product',
         pageTitle: 'Add-Product',
         editing: 'false',
-        isLoggedIn: request.isLoggedIn,
+        hasError: false,
+        errorMessage: null,
+        validationErrors: [],
     });
 };
 
@@ -117,6 +119,24 @@ module.exports.postAddProduct = (request, response, next) => {
     //             console.log(error);
     //         }
     //     });
+    const errors = validationResult(request);
+
+    if (!errors.isEmpty()) {
+        return response.status(422).render('admin/edit-product', {
+            pageTitle: 'Add Product',
+            path: '/admin/add-product',
+            editing: 'false',
+            hasError: true,
+            product: {
+                tile: title,
+                imageUrl: imageUrl,
+                description: description,
+                price: price,
+            },
+            errorMessage: errors.array()[0].msg,
+            validatonErrors: errors.array(),
+        });
+    }
 
     const product = new Product({
         title: title,
@@ -179,7 +199,9 @@ module.exports.getEditProduct = (request, response, next) => {
                 path: '/admin/edit-product',
                 editing: editing,
                 product: product,
-                isLoggedIn: request.isLoggedIn,
+                hasError: false,
+                errorMessage: null,
+                validationErrors: [],
             });
         })
         .catch((error) => {
@@ -235,18 +257,39 @@ module.exports.postEditProduct = (request, response, next) => {
     //             console.log(error);
     //         }
     //     });
+    const errors = validationResult(request);
+
+    if (!errors.isEmpty()) {
+        return response.status(422).render('admin/edit-product', {
+            pageTitle: 'Edit Produdct',
+            path: '/admin/edit-product',
+            editing: 'true',
+            product: {
+                _id: productId,
+                title: productTitle,
+                price: productPrice,
+                description: productDescription,
+                imageUrl: productImageUrl,
+            },
+            hasError: true,
+            errorMessage: errors.array()[0].msg,
+            validationErrors: errors.array(),
+        });
+    }
 
     Product.findById(productId)
         .then((product) => {
+            if (product.userId.toString() !== request.user._id.toString()) {
+                return response.redirect('/');
+            }
             product.title = productTitle;
             product.price = productPrice;
             product.description = productDescription;
             product.imageUrl = productImageUrl;
 
-            return product.save();
-        })
-        .then((result) => {
-            response.redirect('/admin/products');
+            return product.save().then((result) => {
+                response.redirect('/admin/products');
+            });
         })
         .catch((error) => {
             if (error) {
@@ -283,7 +326,18 @@ module.exports.postDeleteProduct = (request, response, next) => {
     //         }
     //     });
 
-    Product.findByIdAndRemove(productId)
+    // NOT AUTORIZED BY EACH USER
+    // Product.findByIdAndRemove(productId)
+    //     .then((result) => {
+    //         response.redirect('/admin/products');
+    //     })
+    //     .catch((error) => {
+    //         if (error) {
+    //             console.log(error);
+    //         }
+    //     });
+
+    Product.deleteOne({ _id: productId, userId: request.user._id })
         .then((result) => {
             response.redirect('/admin/products');
         })

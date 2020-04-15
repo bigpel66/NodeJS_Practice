@@ -7,16 +7,24 @@
     <%- include('../includes/navigation.ejs') %>
 
     <main>
-        <form class="login-form" action="/login" method="POST">
+        <% if (errorMessage) { %>
+        <div class="user-message user-message--error"><%= errorMessage %></div>
+        <% } %>
+        <form class="login-form" action="/login" method="POST" novalidate>
             <div class="form-control">
                 <label for="email">E-Mail</label>
-                <input type="email" name="email" id="email"></input>
+                <input class="<%= validationErrors.find(error => {return error.param === 'email'}) ? 'invalid' : '' %>" type="email" name="email" id="email"></input>
             </div>
             <div class="form-control">
                 <label for="password">Password</label>
-                <input type="password" name="password" id="password"></input>
+                <input class="<%= validationErrors.find(error => {return error.param === 'password'}) ? 'invalid' : '' %>" type="password" name="password" id="password"></input>
             </div>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>"></input>
             <button class="btn" type="submit">Login</button>
         </form>
+        <div class="centered">
+            <a href="/reset" method="GET">Reset Password</a>
+        </div>
+        
     </main>
 <%- include('../includes/end.ejs') %>

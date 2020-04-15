@@ -18,10 +18,24 @@ const bodyParser = require('body-parser');
 
 // const User = require('./models/user');
 
+const MONGODB_URI =
+    'mongodb+srv://bigpel66:JasonSeo@cluster0-2e6no.mongodb.net/shop?retryWrites=true&w=majority';
+
 const mongoose = require('mongoose');
 const User = require('./models/user');
 
 const session = require('express-session');
+
+const MongoDBStore = require('connect-mongodb-session')(session);
+const store = new MongoDBStore({
+    uri: MONGODB_URI,
+    collection: 'sessions',
+});
+
+const csurf = require('csurf');
+const csurfProtection = csurf();
+
+const flash = require('connect-flash');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -38,8 +52,39 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(
-    session({ secret: 'my secret', resave: false, saveUninitialized: false })
+    session({
+        secret: 'my secret',
+        resave: false,
+        saveUninitialized: false,
+        store: store,
+    })
 );
+
+app.use(csurfProtection);
+
+app.use(flash());
+
+app.use((request, response, next) => {
+    if (!request.session.user) {
+        return next();
+    }
+
+    User.findById(request.session.user._id)
+        .then((user) => {
+            request.user = user;
+            next();
+        })
+        .catch((error) => {
+            if (error) {
+                console.log(error);
+            }
+        });
+});
+
+// app.use((request, response, next) => {
+//     request.session.user = new User().init(request.session.user);
+//     next();
+// });
 
 // SEQUELIZE USER IN REQUEST
 // app.use((request, response, next) => {
@@ -70,16 +115,9 @@ app.use(
 // });
 
 app.use((request, response, next) => {
-    User.findOne()
-        .then((user) => {
-            request.user = user;
-            next();
-        })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
-            }
-        });
+    response.locals.isLoggedIn = request.session.isLoggedIn;
+    response.locals.csrfToken = request.csrfToken();
+    next();
 });
 
 app.use('/admin', adminRoutes);
@@ -135,25 +173,7 @@ app.use(errorController.get404);
 // });
 
 mongoose
-    .connect(
-        'mongodb+srv://bigpel66:JasonSeo@cluster0-2e6no.mongodb.net/shop?retryWrites=true&w=majority'
-    )
-    .then((result) => {
-        User.findOne()
-            .then((user) => {
-                if (!user) {
-                    const newUser = new User({
-                        name: 'Jason Seo',
-                        email: 'bigpel66@gmail.com',
-                        cart: { items: [] },
-                    });
-                    return newUser.save();
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    })
+    .connect(MONGODB_URI)
     .then((result) => {
         app.listen(3000);
     })
