@@ -117,9 +117,11 @@ module.exports.postLogin = (request, response, next) => {
                     }
                 });
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };
@@ -204,9 +206,11 @@ module.exports.postSignUp = (request, response, next) => {
                     }
                 });
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };
@@ -261,9 +265,11 @@ module.exports.postReset = (request, response, next) => {
                     `,
                 });
             })
-            .catch((error) => {
-                if (error) {
-                    console.log(error);
+            .catch((err) => {
+                if (err) {
+                    const error = new Error(err);
+                    error.httpStatusCode = 500;
+                    return next(error);
                 }
             });
     });
@@ -295,9 +301,11 @@ module.exports.getNewPassword = (request, response, next) => {
                 });
             }
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };
@@ -329,9 +337,11 @@ module.exports.postNewPassword = (request, response, next) => {
         .then((result) => {
             return response.redirect('/login');
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };

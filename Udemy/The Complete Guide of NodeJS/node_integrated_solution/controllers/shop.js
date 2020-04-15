@@ -39,9 +39,11 @@ module.exports.getProducts = (request, response, next) => {
                 path: '/products',
             });
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };
@@ -85,9 +87,11 @@ module.exports.getProduct = (request, response, next) => {
                 path: '/products',
             });
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };
@@ -130,9 +134,11 @@ module.exports.getIndex = (request, response, next) => {
                 path: '/',
             });
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };
@@ -190,9 +196,11 @@ module.exports.getCart = (request, response, next) => {
                 products: products,
             });
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };
@@ -260,9 +268,11 @@ module.exports.postCart = (request, response, nex) => {
         .then((result) => {
             response.redirect('/cart');
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };
@@ -306,9 +316,11 @@ module.exports.postCartDelete = (request, response, next) => {
         .then((result) => {
             response.redirect('/cart');
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };
@@ -353,9 +365,11 @@ module.exports.getOrders = (request, response, next) => {
                 orders: orders,
             });
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };
@@ -432,9 +446,11 @@ module.exports.postOrder = (request, response, next) => {
         .then((result) => {
             response.redirect('/orders');
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };

@@ -43,9 +43,11 @@ module.exports.getProducts = (request, response, next) => {
                 path: '/admin/products',
             });
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };
@@ -151,8 +153,8 @@ module.exports.postAddProduct = (request, response, next) => {
         .then((result) => {
             response.redirect('/admin/products');
         })
-        .catch((error) => {
-            if (error) {
+        .catch((err) => {
+            if (err) {
                 // Redundant Code on Error
                 // return response.status(500).render('admin/edit-product', {
                 //     pageTitle: 'Add Product',
@@ -171,7 +173,7 @@ module.exports.postAddProduct = (request, response, next) => {
                 // });
                 // Also Redundant Codes on Error
                 // return response.redirect('/500');
-                const error = new Error('error');
+                const error = new Error(err);
                 error.httpStatusCode = 500;
                 return next(error);
             }
@@ -224,9 +226,11 @@ module.exports.getEditProduct = (request, response, next) => {
                 validationErrors: [],
             });
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };
@@ -311,9 +315,11 @@ module.exports.postEditProduct = (request, response, next) => {
                 response.redirect('/admin/products');
             });
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };
@@ -361,9 +367,11 @@ module.exports.postDeleteProduct = (request, response, next) => {
         .then((result) => {
             response.redirect('/admin/products');
         })
-        .catch((error) => {
-            if (error) {
-                console.log(error);
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
             }
         });
 };
