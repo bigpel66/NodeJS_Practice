@@ -502,7 +502,30 @@ module.exports.getInvoice = (request, response, next) => {
             pdfDoc.pipe(fs.createWriteStream(invoicePath));
             pdfDoc.pipe(response);
 
-            pdfDoc.text('Hello World');
+            pdfDoc.fontSize(24).text('Invoice', { underline: true });
+            pdfDoc.text('\n');
+            let totalPrice = 0;
+
+            order.products.forEach((productData) => {
+                totalPrice += productData.product.price * productData.quantity;
+                pdfDoc
+                    .fontSize(16)
+                    .text(
+                        productData.product.title +
+                            ' - ' +
+                            productData.quantity +
+                            ' x ' +
+                            '$' +
+                            productData.product.price
+                    );
+            });
+            pdfDoc
+                .fontSize(16)
+                .text(
+                    '\n\n\n--------------------------------------------------------------------'
+                );
+            pdfDoc.fontSize(18).text('\nTotal Price: $' + totalPrice);
+
             pdfDoc.end();
 
             // STREAM WITH HARD CODING PDF

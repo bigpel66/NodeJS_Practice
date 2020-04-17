@@ -141,8 +141,6 @@ module.exports.postAddProduct = (request, response, next) => {
 
     const errors = validationResult(request);
 
-    console.log(errors);
-
     if (!errors.isEmpty()) {
         return response.status(422).render('admin/edit-product', {
             pageTitle: 'Add Product',
@@ -160,8 +158,6 @@ module.exports.postAddProduct = (request, response, next) => {
     }
 
     const imageUrl = image.path;
-
-    console.log(imageUrl);
 
     const product = new Product({
         title: title,
