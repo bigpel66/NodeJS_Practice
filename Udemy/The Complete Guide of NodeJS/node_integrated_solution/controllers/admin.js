@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const fileHelper = require('../helpers/file');
 
 const { validationResult } = require('express-validator/check');
 
@@ -331,6 +332,7 @@ module.exports.postEditProduct = (request, response, next) => {
             // product.imageUrl = productImageUrl;
 
             if (image) {
+                fileHelper.deleteFile(product.imageUrl);
                 product.imageUrl = image.path;
             }
 
@@ -386,7 +388,18 @@ module.exports.postDeleteProduct = (request, response, next) => {
     //         }
     //     });
 
-    Product.deleteOne({ _id: productId, userId: request.user._id })
+    Product.findById(productId)
+        .then((product) => {
+            if (!product) {
+                return next(new Error('Product not found.'));
+            }
+            fileHelper.deleteFile(product.imageUrl);
+
+            return Product.deleteOne({
+                _id: productId,
+                userId: request.user._id,
+            });
+        })
         .then((result) => {
             response.redirect('/admin/products');
         })
@@ -395,6 +408,11 @@ module.exports.postDeleteProduct = (request, response, next) => {
                 const error = new Error(err);
                 error.httpStatusCode = 500;
                 return next(error);
+            }
+        })
+        .catch((err) => {
+            if (err) {
+                return next(err);
             }
         });
 };
