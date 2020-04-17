@@ -66,9 +66,7 @@ module.exports.getAddProduct = (request, response, next) => {
 module.exports.postAddProduct = (request, response, next) => {
     const title = request.body.title;
     // const imageUrl = request.body.imageUrl;
-    const imageUrl = request.file;
-
-    console.log(request.file);
+    const image = request.file;
     const price = request.body.price;
     const description = request.body.description;
 
@@ -124,7 +122,26 @@ module.exports.postAddProduct = (request, response, next) => {
     //             console.log(error);
     //         }
     //     });
+
+    if (!image) {
+        return response.status(422).render('admin/edit-product', {
+            pageTitle: 'Add Product',
+            path: '/admin/add-product',
+            editing: 'false',
+            hasError: true,
+            product: {
+                title: title,
+                description: description,
+                price: price,
+            },
+            errorMessage: 'Attached file is not an image.',
+            validationErrors: [],
+        });
+    }
+
     const errors = validationResult(request);
+
+    console.log(errors);
 
     if (!errors.isEmpty()) {
         return response.status(422).render('admin/edit-product', {
@@ -134,7 +151,6 @@ module.exports.postAddProduct = (request, response, next) => {
             hasError: true,
             product: {
                 tile: title,
-                imageUrl: imageUrl,
                 description: description,
                 price: price,
             },
@@ -142,6 +158,8 @@ module.exports.postAddProduct = (request, response, next) => {
             validatonErrors: errors.array(),
         });
     }
+
+    const imageUrl = image.path;
 
     const product = new Product({
         title: title,
@@ -242,7 +260,8 @@ module.exports.postEditProduct = (request, response, next) => {
     const productId = request.body.id;
     const productTitle = request.body.title;
     const productPrice = request.body.price;
-    const productImageUrl = request.body.imageUrl;
+    // const productImageUrl = request.body.imageUrl;
+    const image = request.file;
     const productDescription = request.body.description;
 
     // SEQUELIZE
@@ -296,7 +315,6 @@ module.exports.postEditProduct = (request, response, next) => {
                 title: productTitle,
                 price: productPrice,
                 description: productDescription,
-                imageUrl: productImageUrl,
             },
             hasError: true,
             errorMessage: errors.array()[0].msg,
@@ -312,7 +330,11 @@ module.exports.postEditProduct = (request, response, next) => {
             product.title = productTitle;
             product.price = productPrice;
             product.description = productDescription;
-            product.imageUrl = productImageUrl;
+            // product.imageUrl = productImageUrl;
+
+            if (image) {
+                product.imageUrl = image.path;
+            }
 
             return product.save().then((result) => {
                 response.redirect('/admin/products');
