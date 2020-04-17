@@ -467,6 +467,11 @@ module.exports.getInvoice = (request, response, next) => {
         if (error) {
             next(error);
         } else {
+            response.setHeader('Content-Type', 'application/pdf');
+            response.setHeader(
+                'Content-Disposition',
+                `inline; filename='${invoiceName}'`
+            );
             response.send(dataContent);
         }
     });
