@@ -2,6 +2,8 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const uuidv4 = require('uuid/v4');
+const multer = require('multer');
 
 // SEQUELIZE MODELS
 // const sequelize = require('./helpers/database');
@@ -45,10 +47,21 @@ const errorController = require('./controllers/error');
 
 const app = express();
 
+const fileStorage = multer.diskStorage({
+    destination: (request, file, cb) => {
+        cb(null, 'images');
+    },
+    filename: (request, file, cb) => {
+        cb(null, new Date().toISOString() + '-' + file.originalname);
+    },
+});
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ storage: fileStorage }).single('image'));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(
@@ -131,9 +144,11 @@ app.get('/500', errorController.get500);
 app.use(errorController.get404);
 
 app.use((error, request, response, next) => {
+    console.log(error);
     response.status(500).render('500', {
         path: '/500',
         pageTitle: 'Error!',
+        isLoggedIn: request.session.isLoggedIn,
     });
 });
 

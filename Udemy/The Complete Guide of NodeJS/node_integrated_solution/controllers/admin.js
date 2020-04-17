@@ -66,7 +66,9 @@ module.exports.getAddProduct = (request, response, next) => {
 module.exports.postAddProduct = (request, response, next) => {
     const title = request.body.title;
     // const imageUrl = request.body.imageUrl;
-    const imageUrl = request.body.image;
+    const imageUrl = request.file;
+
+    console.log(request.file);
     const price = request.body.price;
     const description = request.body.description;
 
