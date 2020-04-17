@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const PDFDocument = require('pdfkit');
+
 const Product = require('../models/product');
 const Order = require('../models/order');
 
@@ -474,6 +476,7 @@ module.exports.getInvoice = (request, response, next) => {
             const invoiceName = 'invoice-' + orderId + '.pdf';
             const invoicePath = path.join('data', 'invoices', invoiceName);
 
+            // NONE STREAM
             // fs.readFile(invoicePath, (error, dataContent) => {
             //     if (error) {
             //         next(error);
@@ -487,13 +490,29 @@ module.exports.getInvoice = (request, response, next) => {
             //     }
             // });
 
-            const file = fs.createReadStream(invoicePath);
+            // STREAM WITH GENERATING PDF
+            const pdfDoc = new PDFDocument();
+
             response.setHeader('Content-Type', 'application/pdf');
             response.setHeader(
                 'Content-Disposition',
                 `inline; filename='${invoiceName}'`
             );
-            file.pipe(response);
+
+            pdfDoc.pipe(fs.createWriteStream(invoicePath));
+            pdfDoc.pipe(response);
+
+            pdfDoc.text('Hello World');
+            pdfDoc.end();
+
+            // STREAM WITH HARD CODING PDF
+            // const file = fs.createReadStream(invoicePath);
+            // response.setHeader('Content-Type', 'application/pdf');
+            // response.setHeader(
+            //     'Content-Disposition',
+            //     `inline; filename='${invoiceName}'`
+            // );
+            // file.pipe(response);
         })
         .catch((err) => {
             if (err) {
