@@ -161,6 +161,8 @@ module.exports.postAddProduct = (request, response, next) => {
 
     const imageUrl = image.path;
 
+    console.log(imageUrl);
+
     const product = new Product({
         title: title,
         price: price,
