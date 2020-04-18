@@ -367,8 +367,8 @@ module.exports.postEditProduct = (request, response, next) => {
         });
 };
 
-module.exports.postDeleteProduct = (request, response, next) => {
-    const productId = request.body.productId;
+module.exports.deleteProduct = (request, response, next) => {
+    const productId = request.params.productId;
 
     // SEQUELIZE
     // Product.findByPk(productId)
@@ -419,18 +419,11 @@ module.exports.postDeleteProduct = (request, response, next) => {
             });
         })
         .then((result) => {
-            response.redirect('/admin/products');
+            response.status(200).json({ message: 'Success!' });
+            // Rendering New HTML
+            // response.redirect('/admin/products');
         })
         .catch((err) => {
-            if (err) {
-                const error = new Error(err);
-                error.httpStatusCode = 500;
-                return next(error);
-            }
-        })
-        .catch((err) => {
-            if (err) {
-                return next(err);
-            }
+            response.status(500).json({ message: 'Deleting product failed.' });
         });
 };
