@@ -6,6 +6,8 @@ const PDFDocument = require('pdfkit');
 const Product = require('../models/product');
 const Order = require('../models/order');
 
+const ITEMS_PER_PAGE = 2;
+
 module.exports.getProducts = (request, response, next) => {
     // SEQUELIZE
     // Product.findAll()
@@ -131,12 +133,29 @@ module.exports.getIndex = (request, response, next) => {
     //         }
     //     });
 
+    const page = request.query.page;
+    let totalItems;
+
     Product.find()
+        .countDocuments()
+        .then((count) => {
+            totalItems = count;
+
+            return Product.find()
+                .skip((page - 1) * ITEMS_PER_PAGE)
+                .limit(ITEMS_PER_PAGE);
+        })
         .then((products) => {
             response.render('shop/index', {
                 products: products,
                 pageTitle: 'Shop',
                 path: '/',
+                totalItems: totalItems,
+                hasNextPage: page * ITEMS_PER_PAGE < totalItems,
+                hasPreviousPage: page > 1,
+                nextPage: page + 1,
+                previousPage: page - 1,
+                lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
             });
         })
         .catch((err) => {
