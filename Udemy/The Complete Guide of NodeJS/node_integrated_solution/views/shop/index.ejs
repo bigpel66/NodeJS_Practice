@@ -29,8 +29,30 @@
                 <% } %>
             </div>
             <section class="pagination">
-                <a href="/?page=1">1</a>
-                <a href="/?page=2">2</a>
+              <!-- //  <% if(currentPage !== 1) { %>
+              //      <% for(var index = 1;  index < currentPage; index++) { %> 
+              //          <a href="/?page=<%= index %>"><%= index %></a>
+              //      <% } %>
+              //  <% } %>
+              //  <a class="active" href="/?page=<%= currentPage %>"><%= currentPage %></a>
+              //  <% if(currentPage !== lastPage) { %>
+              //      <% for(var index = currentPage + 1; index <= lastPage; index++) { %> 
+              //          <a href="/?page=<%= index %>"><%= index %></a>
+              //      <% } %>
+              //  <% } %> -->
+                <% if(hasPreviousPage && previousPage !== 1) { %>
+                    <a href="/?page=1">1</a>
+                <% } %>
+                <% if(hasPreviousPage) { %> 
+                    <a href="/?page=<%= previousPage %>"><%= previousPage %></a>
+                <% } %>
+                <a href="/?page=<%= currentPage %>" class="active"><%= currentPage %></a>
+                <% if(hasNextPage) { %> 
+                    <a href="/?page=<%= nextPage %>"><%= nextPage %></a>
+                <% } %>
+                <% if(hasNextPage && nextPage !== lastPage) { %> 
+                    <a href="/?page=<%= lastPage %>"><%= lastPage %></a>
+                <% } %>
             </section>
         <% } else { %>
             <h1>No Products Found!</h1>

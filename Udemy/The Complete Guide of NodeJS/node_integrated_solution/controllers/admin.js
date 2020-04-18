@@ -154,7 +154,7 @@ module.exports.postAddProduct = (request, response, next) => {
                 price: price,
             },
             errorMessage: errors.array()[0].msg,
-            validatonErrors: errors.array(),
+            validationErrors: errors.array(),
         });
     }
 

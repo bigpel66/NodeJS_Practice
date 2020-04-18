@@ -133,7 +133,7 @@ module.exports.getIndex = (request, response, next) => {
     //         }
     //     });
 
-    const page = request.query.page;
+    const page = +request.query.page || 1;
     let totalItems;
 
     Product.find()
@@ -155,11 +155,13 @@ module.exports.getIndex = (request, response, next) => {
                 hasPreviousPage: page > 1,
                 nextPage: page + 1,
                 previousPage: page - 1,
+                currentPage: page,
                 lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
             });
         })
         .catch((err) => {
             if (err) {
+                console.log(err);
                 const error = new Error(err);
                 error.httpStatusCode = 500;
                 return next(error);
