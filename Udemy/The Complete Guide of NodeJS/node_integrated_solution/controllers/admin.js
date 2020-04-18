@@ -3,6 +3,8 @@ const fileHelper = require('../helpers/file');
 
 const { validationResult } = require('express-validator/check');
 
+const ITEMS_PER_PAGE = 2;
+
 module.exports.getProducts = (request, response, next) => {
     // SEQUELIZE
     // request.user
@@ -34,14 +36,30 @@ module.exports.getProducts = (request, response, next) => {
     //         }
     //     });
 
+    const page = +request.query.page || 1;
+    let totalItems;
+
     Product.find({ userId: request.user._id })
-        // .select('title price -_id')
-        // .populate('userId', 'name')
+        .countDocuments()
+        .then((count) => {
+            totalItems = count;
+
+            return Product.find()
+                .skip((page - 1) * ITEMS_PER_PAGE)
+                .limit(ITEMS_PER_PAGE);
+        })
         .then((products) => {
             response.render('admin/products', {
                 products: products,
                 pageTitle: 'Admin Products',
                 path: '/admin/products',
+                totalItems: totalItems,
+                hasNextPage: page * ITEMS_PER_PAGE < totalItems,
+                hasPreviousPage: page > 1,
+                nextPage: page + 1,
+                previousPage: page - 1,
+                currentPage: page,
+                lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
             });
         })
         .catch((err) => {
