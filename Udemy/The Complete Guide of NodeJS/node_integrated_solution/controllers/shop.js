@@ -369,6 +369,34 @@ module.exports.postCartDelete = (request, response, next) => {
         });
 };
 
+module.exports.getCheckout = (request, response, next) => {
+    request.user
+        .populate('cart.items.productId')
+        .execPopulate()
+        .then((user) => {
+            const products = user.cart.items;
+
+            let totalSum = 0;
+            products.forEach((productData) => {
+                totalSum += productData.quantity * productData.productId.price;
+            });
+
+            return response.render('shop/checkout', {
+                pageTitle: 'Checkout',
+                path: '/checkout',
+                products: products,
+                totalSum: totalSum,
+            });
+        })
+        .catch((err) => {
+            if (err) {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                next(error);
+            }
+        });
+};
+
 module.exports.getOrders = (request, response, next) => {
     // SEQUELIZE
     // request.user
