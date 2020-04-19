@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const PDFDocument = require('pdfkit');
+const stripe = require('stripe')('blocked');
 
 const Product = require('../models/product');
 const Order = require('../models/order');
@@ -370,22 +371,49 @@ module.exports.postCartDelete = (request, response, next) => {
 };
 
 module.exports.getCheckout = (request, response, next) => {
+    let products;
+    let totalSum = 0;
+
     request.user
         .populate('cart.items.productId')
         .execPopulate()
         .then((user) => {
-            const products = user.cart.items;
-
-            let totalSum = 0;
+            products = user.cart.items;
+            totalSum = 0;
             products.forEach((productData) => {
                 totalSum += productData.quantity * productData.productId.price;
             });
 
+            return stripe.checkout.sessions.create({
+                payment_method_types: ['card'],
+                line_items: products.map((product) => {
+                    return {
+                        name: product.productId.title,
+                        description: product.productId.description,
+                        amount: product.productId.price * 100,
+                        currency: 'usd',
+                        quantity: product.quantity,
+                    };
+                }),
+                success_url:
+                    request.protocol +
+                    '://' +
+                    request.get('host') +
+                    '/checkout/success',
+                cancel_url:
+                    request.protocol +
+                    '://' +
+                    request.get('host') +
+                    '/checkout/cancel',
+            });
+        })
+        .then((session) => {
             return response.render('shop/checkout', {
                 pageTitle: 'Checkout',
                 path: '/checkout',
                 products: products,
                 totalSum: totalSum,
+                sessionId: session.id,
             });
         })
         .catch((err) => {
@@ -446,7 +474,7 @@ module.exports.getOrders = (request, response, next) => {
         });
 };
 
-module.exports.postOrder = (request, response, next) => {
+module.exports.getCheckoutSuccess = (request, response, next) => {
     // SEQUELIZE
     // let fetchedCart;
     // let cartProducts;
