@@ -29,9 +29,6 @@ exports.postPosts = (request, response, next) => {
     const title = request.body.title;
     const content = request.body.content;
 
-    console.log(title);
-    console.log(content);
-
     response.status(201).json({
         message: 'Post created successfully!',
         post: {
