@@ -34,6 +34,12 @@ exports.postPosts = (request, response, next) => {
 
     response.status(201).json({
         message: 'Post created successfully!',
-        post: { id: new Date().toISOString(), title: title, content: content },
+        post: {
+            _id: new Date().toISOString(),
+            title: title,
+            content: content,
+            creator: { name: 'Jason Seo' },
+            createdAt: new Date(),
+        },
     });
 };
