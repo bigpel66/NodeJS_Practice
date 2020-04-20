@@ -1,15 +1,33 @@
 exports.getPosts = (request, response, next) => {
     response.status(200).json({
         posts: [
-            { title: 'First Post', content: 'This is the first post!' },
-            { title: 'Second Post', content: 'Second post with first one' },
+            {
+                _id: '1',
+                title: 'First Post',
+                content: 'This is the first post!',
+                imageUrl: 'images/wallpaper.jpg',
+                creator: {
+                    name: 'Jason Seo',
+                },
+                createdAt: new Date(),
+            },
+            {
+                _id: '2',
+                title: 'Second Post',
+                content: 'Second post with first one',
+                imageUrl: 'images/couch.jpg',
+                creator: {
+                    name: 'Jason Seo',
+                },
+                createdAt: new Date(),
+            },
         ],
     });
 };
 
 exports.postPosts = (request, response, next) => {
     const title = request.body.title;
-    const content = request.body.content; 
+    const content = request.body.content;
 
     console.log(title);
     console.log(content);
