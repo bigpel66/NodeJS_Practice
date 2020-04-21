@@ -24,15 +24,19 @@ exports.postPosts = (request, response, next) => {
         const error = new Error(
             'Validation failed, entered data is incorrect.'
         );
-
         error.httpStatusCode = 422;
+        throw error;
+    }
 
+    if (!request.file) {
+        const error = new Error('No image provided.');
+        error.statusCode = 422;
         throw error;
     }
 
     const title = request.body.title;
     const content = request.body.content;
-    const imageUrl = 'images/wallpaper.jpg';
+    const imageUrl = request.file.path;
 
     const post = new Post({
         title: title,
