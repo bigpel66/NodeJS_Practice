@@ -1,3 +1,5 @@
+const { validationResult } = require('express-validator/check');
+
 exports.getPosts = (request, response, next) => {
     response.status(200).json({
         posts: [
@@ -28,6 +30,15 @@ exports.getPosts = (request, response, next) => {
 exports.postPosts = (request, response, next) => {
     const title = request.body.title;
     const content = request.body.content;
+
+    const errors = validationResult(request);
+
+    if (!errors) {
+        return response.status(422).json({
+            message: 'Validation failed, entered data is incorrect.',
+            errors: errors.array(),
+        });
+    }
 
     response.status(201).json({
         message: 'Post created successfully!',
