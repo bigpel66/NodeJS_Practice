@@ -57,11 +57,10 @@ app.use('/feed', feedRoutes);
 app.use('/auth', authRoutes);
 
 app.use((error, request, response, next) => {
-    console.log(error);
     const status = error.statusCode || 500;
     const message = error.messgae;
-
-    response.status(status).json({ message: message });
+    const data = error.data;
+    response.status(status).json({ message: message, data: data });
 });
 
 mongoose
