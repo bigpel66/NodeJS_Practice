@@ -41,3 +41,38 @@ module.exports.signup = (request, response, next) => {
             next(err);
         });
 };
+
+module.exports.login = (request, response, next) => {
+    const email = request.body.email;
+    const password = request.body.email;
+
+    let loadedUser;
+
+    User.findOne({ email: email })
+        .then((user) => {
+            if (!user) {
+                const error = new Error(
+                    'A user with this email could not be found.'
+                );
+                error.statusCode = 401;
+                throw error;
+            }
+
+            loadedUser = user;
+
+            return bcrypt.compare(password, user.password);
+        })
+        .then((result) => {
+            if (!result) {
+                const error = new Error('Wrong password!');
+                error.statusCode = 401;
+                throw error;
+            }
+        })
+        .catch((err) => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        });
+};
