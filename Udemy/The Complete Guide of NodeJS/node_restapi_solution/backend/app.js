@@ -72,7 +72,7 @@ mongoose
         app.listen(8080);
     })
     .catch((err) => {
-        if (errr) {
+        if (err) {
             console.log(err);
         }
     });
