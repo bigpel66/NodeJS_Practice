@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const { validationResult } = require('express-validator/check');
 
@@ -68,6 +69,14 @@ module.exports.login = (request, response, next) => {
                 error.statusCode = 401;
                 throw error;
             }
+
+            const token = jwt.sign(
+                {
+                    email: loadedUser.email,
+                    userId: loadedUser._id.toString(),
+                },
+                'My Secret'
+            );
         })
         .catch((err) => {
             if (!err.statusCode) {
