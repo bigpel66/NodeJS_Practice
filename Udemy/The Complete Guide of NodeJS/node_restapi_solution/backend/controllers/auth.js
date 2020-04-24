@@ -45,7 +45,7 @@ module.exports.signup = (request, response, next) => {
 
 module.exports.login = (request, response, next) => {
     const email = request.body.email;
-    const password = request.body.email;
+    const password = request.body.password;
 
     let loadedUser;
 
@@ -75,8 +75,13 @@ module.exports.login = (request, response, next) => {
                     email: loadedUser.email,
                     userId: loadedUser._id.toString(),
                 },
-                'My Secret'
+                'MySecret',
+                { expiresIn: '1h' }
             );
+
+            return response
+                .status(200)
+                .json({ token: token, userId: loadedUser._id.toString() });
         })
         .catch((err) => {
             if (!err.statusCode) {
