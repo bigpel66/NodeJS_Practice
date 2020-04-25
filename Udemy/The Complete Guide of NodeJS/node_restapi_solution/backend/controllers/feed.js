@@ -152,6 +152,12 @@ module.exports.updatePost = (request, response, next) => {
                 throw error;
             }
 
+            if (post.creator.toString() !== request.userId) {
+                const error = new Error('Not authenticated.');
+                error.statusCode = 403;
+                throw error;
+            }
+
             if (imageUrl !== post.imageUrl) {
                 clearImage(post.imageUrl);
             }
@@ -193,6 +199,13 @@ module.exports.deletePost = (request, response, next) => {
                 error.statusCode = 404;
                 throw error;
             }
+
+            if (post.creator.toString() !== request.userId) {
+                const error = new Error('Not authenticated.');
+                error.statusCode = 403;
+                throw error;
+            }
+
             clearImage(post.imageUrl);
 
             return Post.findByIdAndRemove(postId);
