@@ -4,6 +4,7 @@ const path = require('path');
 const { validationResult } = require('express-validator/check');
 
 const Post = require('../models/post');
+const User = require('../models/user');
 
 exports.readPosts = (request, response, next) => {
     const currentPage = request.query.page || 1;
@@ -16,6 +17,7 @@ exports.readPosts = (request, response, next) => {
             totalItems = count;
 
             return Post.find()
+                .populate('creator')
                 .skip((currentPage - 1) * itemsPerPage)
                 .limit(itemsPerPage);
         })
@@ -55,20 +57,33 @@ exports.createPost = (request, response, next) => {
     const content = request.body.content;
     const imageUrl = request.file.path;
 
+    let creator;
+
     const post = new Post({
         title: title,
         content: content,
         imageUrl: imageUrl,
-        creator: { name: 'Jason Seo' },
+        creator: request.userId,
     });
 
     post.save()
-        .then((post) =>
-            response.status(201).json({
+        .then((result) => {
+            return User.findById(request.userId);
+        })
+        .then((user) => {
+            creator = user;
+            console.log(creator);
+            user.posts.push(post);
+
+            return user.save();
+        })
+        .then((result) => {
+            return response.status(201).json({
                 message: 'Post created successfully!',
                 post: post,
-            })
-        )
+                creator: { _id: creator._id, name: creator.name },
+            });
+        })
         .catch((err) => {
             if (!err.statusCode) {
                 err.statusCode = 500;

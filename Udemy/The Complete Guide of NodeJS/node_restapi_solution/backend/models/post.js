@@ -13,7 +13,8 @@ const postSchema = new Schema(
         },
         content: { type: String, required: true },
         creator: {
-            type: Object,
+            type: Schema.Types.ObjectId,
+            ref: 'User',
             required: true,
         },
     },
