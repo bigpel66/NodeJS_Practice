@@ -72,7 +72,7 @@ exports.createPost = (request, response, next) => {
         })
         .then((user) => {
             creator = user;
-            console.log(creator);
+
             user.posts.push(post);
 
             return user.save();
@@ -209,6 +209,14 @@ module.exports.deletePost = (request, response, next) => {
             clearImage(post.imageUrl);
 
             return Post.findByIdAndRemove(postId);
+        })
+        .then((result) => {
+            return User.findById(request.userId);
+        })
+        .then((user) => {
+            user.posts.pull(postId);
+
+            return user.save();
         })
         .then((result) => {
             return response.status(200).json({ message: 'Deleted post.' });
