@@ -90,3 +90,50 @@ module.exports.login = (request, response, next) => {
             next(err);
         });
 };
+
+module.exports.readStatus = (request, response, next) => {
+    User.findById(request.userId)
+        .then((user) => {
+            if (!user) {
+                const error = new Error('No user found.');
+                error.statusCode = 404;
+                throw error;
+            }
+
+            return response.status(200).json({ status: user.status });
+        })
+        .catch((err) => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        });
+};
+
+module.exports.updateStatus = (request, response, next) => {
+    const newStatus = request.body.status;
+
+    User.findById(request.userId)
+        .then((user) => {
+            if (!user) {
+                const error = new Error('No user found.');
+                error.statusCode = 404;
+                throw error;
+            }
+
+            user.status = newStatus;
+
+            return user.save();
+        })
+        .then((result) => {
+            return response
+                .status(200)
+                .json({ message: 'User status updated.' });
+        })
+        .catch((errr) => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        });
+};
