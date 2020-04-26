@@ -6,34 +6,27 @@ const { validationResult } = require('express-validator/check');
 const Post = require('../models/post');
 const User = require('../models/user');
 
-exports.readPosts = (request, response, next) => {
+exports.readPosts = async (request, response, next) => {
     const currentPage = request.query.page || 1;
     const itemsPerPage = 2;
-    let totalItems;
+    try {
+        const totalItems = await Post.find().countDocuments();
+        const posts = await Post.find()
+            .populate('creator')
+            .skip((currentPage - 1) * itemsPerPage)
+            .limit(itemsPerPage);
 
-    Post.find()
-        .countDocuments()
-        .then((count) => {
-            totalItems = count;
-
-            return Post.find()
-                .populate('creator')
-                .skip((currentPage - 1) * itemsPerPage)
-                .limit(itemsPerPage);
-        })
-        .then((posts) => {
-            return response.status(200).json({
-                message: 'Fetched posts successfully',
-                posts: posts,
-                totalItems: totalItems,
-            });
-        })
-        .catch((err) => {
-            if (!err.statusCode) {
-                err.statusCode = 500;
-            }
-            next(err);
+        response.status(200).json({
+            message: 'Fetched posts successfully',
+            posts: posts,
+            totalItems: totalItems,
         });
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+            throw err;
+        }
+    }
 };
 
 exports.createPost = (request, response, next) => {
