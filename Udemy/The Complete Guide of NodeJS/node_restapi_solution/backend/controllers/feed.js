@@ -212,6 +212,8 @@ module.exports.deletePost = async (request, response, next) => {
 
         await user.save();
 
+        io.getIO().emit('posts', { action: 'delete', post: postId });
+        
         response.status(200).json({ message: 'Deleted post.' });
     } catch (err) {
         if (!err.statusCode) {
