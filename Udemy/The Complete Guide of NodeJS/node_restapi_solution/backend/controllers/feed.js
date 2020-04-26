@@ -67,7 +67,14 @@ exports.createPost = async (request, response, next) => {
 
         await user.save();
 
-        io.getIO().emit('posts', { action: 'create', post: post });
+        io.getIO().emit('posts', {
+            action: 'create',
+            post: {
+                ...post,
+                creator: { _id: request.userId, name: user.name },
+                createdAt: post.createdAt,
+            },
+        });
 
         return response.status(201).json({
             message: 'Post created successfully!',
@@ -86,7 +93,7 @@ module.exports.readPost = async (request, response, next) => {
     const postId = request.params.postId;
 
     try {
-        const post = await Post.findById(postId);
+        const post = await Post.findById(postId).populate('creator');
 
         if (!post) {
             const error = new Error('Could not find post.');
