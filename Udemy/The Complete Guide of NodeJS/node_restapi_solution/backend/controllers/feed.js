@@ -14,6 +14,7 @@ exports.readPosts = async (request, response, next) => {
         const totalItems = await Post.find().countDocuments();
         const posts = await Post.find()
             .populate('creator')
+            .sort({ createdAt: -1 })
             .skip((currentPage - 1) * itemsPerPage)
             .limit(itemsPerPage);
 
@@ -70,7 +71,7 @@ exports.createPost = async (request, response, next) => {
         io.getIO().emit('posts', {
             action: 'create',
             post: {
-                ...post,
+                ...post._doc,
                 creator: { _id: request.userId, name: user.name },
                 createdAt: post.createdAt,
             },
@@ -138,7 +139,7 @@ module.exports.updatePost = async (request, response, next) => {
     }
 
     try {
-        const post = await Post.findById(postId);
+        const post = await Post.findById(postId).populate('creator');
 
         if (!post) {
             const error = new Error('Could not find post.');
@@ -146,7 +147,7 @@ module.exports.updatePost = async (request, response, next) => {
             throw error;
         }
 
-        if (post.creator.toString() !== request.userId) {
+        if (post.creator._id.toString() !== request.userId) {
             const error = new Error('Not authenticated.');
             error.statusCode = 403;
             throw error;
@@ -160,6 +161,8 @@ module.exports.updatePost = async (request, response, next) => {
         post.imageUrl = imageUrl;
 
         const resultPost = await post.save();
+
+        io.getIO().emit('posts', { action: 'update', post: resultPost });
 
         response
             .status(200)
