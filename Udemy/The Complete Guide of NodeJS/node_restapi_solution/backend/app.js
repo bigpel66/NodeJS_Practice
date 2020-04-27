@@ -64,6 +64,21 @@ app.use(
         schema: graphqlSchema,
         rootValue: graphqlResolver,
         graphiql: true,
+        formatError(err) {
+            if (!err.originalError) {
+                return err;
+            }
+
+            const data = err.originalError.data;
+            const code = err.originalError.code || 500;
+            const message = err.message || 'An error occurred.';
+
+            return {
+                message: message,
+                code: code,
+                data: data,
+            };
+        },
     })
 );
 // DELETED TO USE GRAPHQL
