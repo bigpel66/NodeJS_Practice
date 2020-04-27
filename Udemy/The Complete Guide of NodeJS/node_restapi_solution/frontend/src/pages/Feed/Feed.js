@@ -175,22 +175,51 @@ class Feed extends Component {
         formData.append('content', postData.content);
         formData.append('image', postData.image);
 
-        let url = 'http://localhost:8080/feed/post';
-        let method = 'POST';
-        if (this.state.editPost) {
-            url = 'http://localhost:8080/feed/post/' + this.state.editPost._id;
-            method = 'PUT';
-        }
+        // REST API
+        // let url = 'http://localhost:8080/feed/post';
+        // let method = 'POST';
+        // if (this.state.editPost) {
+        //     url = 'http://localhost:8080/feed/post/' + this.state.editPost._id;
+        //     method = 'PUT';
+        // }
 
-        fetch(url, {
-            method: method,
-            headers: { Authorization: 'Bearer ' + this.props.token },
-            body: formData,
+        // REST API
+        // fetch(url, {
+        //     method: method,
+        //     headers: { Authorization: 'Bearer ' + this.props.token },
+        //     body: formData,
+        // })
+
+        let graphqlQuery = {
+            query: `
+                mutation {
+                    createPost(postInput: {title: "${postData.title}", content: "${postData.content}", imageUrl: "some url"}) {
+                        _id
+                        title
+                        content
+                        imageUrl
+                        creator {
+                            name
+                        }
+                        createdAt
+                    }
+                }
+            `,
+        };
+
+        fetch('http://localhost:8080/graphql', {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + this.props.token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(graphqlQuery),
         })
             .then((res) => {
-                if (res.status !== 200 && res.status !== 201) {
-                    throw new Error('Creating or editing a post failed!');
-                }
+                // REST API
+                // if (res.status !== 200 && res.status !== 201) {
+                //     throw new Error('Creating or editing a post failed!');
+                // }
                 return res.json();
             })
             .then((resData) => {
@@ -201,6 +230,15 @@ class Feed extends Component {
                 //     creator: resData.post.creator,
                 //     createdAt: resData.post.createdAt,
                 // };
+                if (resData.errors && resData.errors[0].status === 422) {
+                    throw new Error(
+                        'Validation failed. Make sure the valid input.'
+                    );
+                }
+
+                if (resData.errors) {
+                    throw new Error('Creating post failed.');
+                }
                 this.setState((prevState) => {
                     return {
                         isEditing: false,
