@@ -112,8 +112,6 @@ class App extends Component {
                     throw new Error('Authentication failed.');
                 }
 
-                console.log(resData);
-
                 // REST API
                 // this.setState({
                 //     isAuth: true,
@@ -205,8 +203,6 @@ class App extends Component {
                 if (resData.errors) {
                     throw new Error('User creation failed!');
                 }
-
-                console.log(resData);
 
                 this.setState({ isAuth: false, authLoading: false });
                 this.props.history.replace('/');

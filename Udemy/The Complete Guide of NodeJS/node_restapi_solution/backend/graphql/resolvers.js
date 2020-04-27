@@ -153,4 +153,31 @@ module.exports = {
             updatedAt: createdPost.updatedAt.toISOString(),
         };
     },
+
+    readPosts: async function (args, request) {
+        if (!request.isAuth) {
+            const error = new Error('Not authenticated.');
+            error.code = 401;
+            throw error;
+        }
+
+        const totalPosts = await Post.find().countDocuments();
+        const posts = await Post.find()
+            .sort({ createdAt: -1 })
+            .populate('creator');
+        
+            
+
+        return {
+            totalPosts: totalPosts,
+            posts: posts.map((post) => {
+                return {
+                    ...post._doc,
+                    _id: post._id.toString(),
+                    createdAt: post.createdAt.toISOString(),
+                    updatedAt: post.updatedAt.toISOString(),
+                };
+            }),
+        };
+    },
 };

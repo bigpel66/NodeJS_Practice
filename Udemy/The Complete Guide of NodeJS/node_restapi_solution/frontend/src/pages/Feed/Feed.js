@@ -101,21 +101,65 @@ class Feed extends Component {
             page--;
             this.setState({ postPage: page });
         }
-        fetch('http://localhost:8080/feed/posts?page=' + page, {
-            headers: { Authorization: 'Bearer ' + this.props.token },
+        // REST API
+        // fetch('http://localhost:8080/feed/posts?page=' + page, {
+        //     headers: { Authorization: 'Bearer ' + this.props.token },
+        // })
+
+        const graphqlQuery = {
+            query: `
+                {
+                    readPosts {
+                        posts {
+                            _id
+                            title
+                            content
+                            creator {
+                                name
+                            }
+                            createdAt
+                        }
+                        totalPosts
+                    }
+                }
+            `,
+        };
+
+        fetch('http://localhost:8080/graphql', {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + this.props.token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(graphqlQuery),
         })
             .then((res) => {
-                if (res.status !== 200) {
-                    throw new Error('Failed to fetch posts.');
-                }
+                // REST API
+                // if (res.status !== 200) {
+                //     throw new Error('Failed to fetch posts.');
+                // }
+
                 return res.json();
             })
             .then((resData) => {
+                if (resData.errors) {
+                    throw new Error('Fetching posts failed.');
+                }
+
+                // REST API
+                // this.setState({
+                //     posts: resData.posts.map((post) => {
+                //         return { ...post, imagePath: post.imageUrl };
+                //     }),
+                //     totalPosts: resData.totalItems,
+                //     postsLoading: false,
+                // });
+
                 this.setState({
-                    posts: resData.posts.map((post) => {
+                    posts: resData.data.readPosts.posts.map((post) => {
                         return { ...post, imagePath: post.imageUrl };
                     }),
-                    totalPosts: resData.totalItems,
+                    totalPosts: resData.data.readPosts.totalPosts,
                     postsLoading: false,
                 });
             })
@@ -223,13 +267,6 @@ class Feed extends Component {
                 return res.json();
             })
             .then((resData) => {
-                // const post = {
-                //     _id: resData.post._id,
-                //     title: resData.post.title,
-                //     content: resData.post.content,
-                //     creator: resData.post.creator,
-                //     createdAt: resData.post.createdAt,
-                // };
                 if (resData.errors && resData.errors[0].status === 422) {
                     throw new Error(
                         'Validation failed. Make sure the valid input.'
@@ -239,8 +276,28 @@ class Feed extends Component {
                 if (resData.errors) {
                     throw new Error('Creating post failed.');
                 }
+
+                const post = {
+                    _id: resData.data.createPost._id,
+                    title: resData.data.createPost.title,
+                    content: resData.data.createPost.content,
+                    creator: resData.data.createPost.creator,
+                    createdAt: resData.data.createPost.createdAt,
+                };
+
                 this.setState((prevState) => {
+                    let updatedPosts = [...prevState.posts];
+                    if (prevState.editPost) {
+                        const postIndex = prevState.posts.findIndex(
+                            (p) => p._id === prevState.editPost._id
+                        );
+                        updatedPosts[postIndex] = post;
+                    } else {
+                        updatedPosts.pop();
+                        updatedPosts.unshift(post);
+                    }
                     return {
+                        posts: updatedPosts,
                         isEditing: false,
                         editPost: null,
                         editLoading: false,
