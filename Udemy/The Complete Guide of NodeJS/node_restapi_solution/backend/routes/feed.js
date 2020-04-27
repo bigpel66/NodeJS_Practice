@@ -1,36 +1,37 @@
-const express = require('express');
-const { body } = require('express-validator/check');
+// DELETED TO USE GRAPHQL
+// const express = require('express');
+// const { body } = require('express-validator/check');
 
-const isAuth = require('../middleware/is-auth');
-const feedController = require('../controllers/feed');
+// const isAuth = require('../middleware/is-auth');
+// const feedController = require('../controllers/feed');
 
-const router = express.Router();
+// const router = express.Router();
 
-router.get('/posts', isAuth, feedController.readPosts);
+// router.get('/posts', isAuth, feedController.readPosts);
 
-router.post(
-    '/post',
-    isAuth,
-    [
-        body('title').trim().isLength({ min: 5 }),
-        body('content').trim().isLength({ min: 5 }),
-    ],
+// router.post(
+//     '/post',
+//     isAuth,
+//     [
+//         body('title').trim().isLength({ min: 5 }),
+//         body('content').trim().isLength({ min: 5 }),
+//     ],
 
-    feedController.createPost
-);
+//     feedController.createPost
+// );
 
-router.get('/post/:postId', isAuth, feedController.readPost);
+// router.get('/post/:postId', isAuth, feedController.readPost);
 
-router.put(
-    '/post/:postId',
-    isAuth,
-    [
-        body('title').trim().isLength({ min: 5 }),
-        body('content').trim().isLength({ min: 5 }),
-    ],
-    feedController.updatePost
-);
+// router.put(
+//     '/post/:postId',
+//     isAuth,
+//     [
+//         body('title').trim().isLength({ min: 5 }),
+//         body('content').trim().isLength({ min: 5 }),
+//     ],
+//     feedController.updatePost
+// );
 
-router.delete('/post/:postId', isAuth, feedController.deletePost);
+// router.delete('/post/:postId', isAuth, feedController.deletePost);
 
-module.exports = router;
+// module.exports = router;

@@ -4,9 +4,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
+const graphqlHttp = require('express-graphql');
 
-const feedRoutes = require('./routes/feed');
-const authRoutes = require('./routes/auth');
+const graphqlSchema = require('./graphql/schema');
+const graphqlResolver = require('./graphql/resolvers');
+
+// DELETED TO USE GRAPHQL
+// const feedRoutes = require('./routes/feed');
+// const authRoutes = require('./routes/auth');
 
 const app = express();
 
@@ -53,8 +58,16 @@ app.use((request, response, next) => {
     next();
 });
 
-app.use('/feed', feedRoutes);
-app.use('/auth', authRoutes);
+app.use(
+    '/graphql',
+    graphqlHttp({
+        schema: graphqlSchema,
+        rootValue: graphqlResolver,
+    })
+);
+// DELETED TO USE GRAPHQL
+// app.use('/feed', feedRoutes);
+// app.use('/auth', authRoutes);
 
 app.use((error, request, response, next) => {
     const status = error.statusCode || 500;
@@ -69,11 +82,13 @@ mongoose
         { useNewUrlParser: true, useUnifiedTopology: true }
     )
     .then((result) => {
-        const server = app.listen(8080);
-        const io = require('./socket').init(server);
-        io.on('connection', (socket) => {
-            console.log('Client connected.');
-        });
+        app.listen(8080);
+        // DELETED TO USE GRAPHQL
+        // const server = app.listen(8080);
+        // const io = require('./socket').init(server);
+        // io.on('connection', (socket) => {
+        //     console.log('Client connected.');
+        // });
     })
     .catch((err) => {
         if (err) {
