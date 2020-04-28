@@ -133,8 +133,8 @@ class Feed extends Component {
 
         const graphqlQuery = {
             query: `
-                {
-                    readPosts(page: ${page}) {
+                query ReadPosts($page: Int!) {
+                    readPosts(page: $page) {
                         posts {
                             _id
                             title
@@ -149,6 +149,9 @@ class Feed extends Component {
                     }
                 }
             `,
+            variables: {
+                page: page,
+            },
         };
 
         fetch('http://localhost:8080/graphql', {
@@ -206,12 +209,15 @@ class Feed extends Component {
         // })
         const graphqlQuery = {
             query: `
-                 mutation {
-                    updateStatus(status: "${this.state.status}") {
+                 mutation UpdateStatus($status: String!) {
+                    updateStatus(status: $status) {
                         status
                     }
                 }
             `,
+            variables: {
+                status: this.state.status,
+            },
         };
 
         fetch('http://localhost:8080/graphql', {
@@ -301,12 +307,12 @@ class Feed extends Component {
                 return resData.json();
             })
             .then((fileResData) => {
-                const imageUrl = fileResData.filePath;
+                const imageUrl = fileResData.filePath || 'undefined';
 
                 let graphqlQuery = {
                     query: `
-                        mutation {
-                            createPost(postInput: {title: "${postData.title}", content: "${postData.content}", imageUrl: "${imageUrl}"}) {
+                        mutation CreatePost($title: String!, $content: String!, $imageUrl: String!) {
+                            createPost(postInput: {title: $title, content: $content, imageUrl: $imageUrl}) {
                                 _id
                                 title
                                 content
@@ -318,13 +324,18 @@ class Feed extends Component {
                             }
                         }
                     `,
+                    variables: {
+                        title: postData.title,
+                        content: postData.content,
+                        imageUrl: imageUrl,
+                    },
                 };
 
                 if (this.state.editPost) {
                     graphqlQuery = {
                         query: `
-                            mutation {
-                                updatePost(id: "${this.state.editPost._id}", postInput: {title: "${postData.title}", content: "${postData.content}", imageUrl: "${imageUrl}"}) {
+                            mutation UpdatePost($id: ID!, $title: String!, $content: String!, $imageUrl: String!) {
+                                updatePost(id: $id, postInput: {title: $title, content: $content, imageUrl: $imageUrl}) {
                                     _id
                                     title
                                     content
@@ -336,6 +347,12 @@ class Feed extends Component {
                                 }
                             }
                         `,
+                        variables: {
+                            id: this.state.editPost._id,
+                            title: postData.title,
+                            content: postData.content,
+                            imageUrl: imageUrl,
+                        },
                     };
                 }
 
@@ -425,10 +442,13 @@ class Feed extends Component {
 
         const graphqlQuery = {
             query: `
-                mutation {
-                    deletePost(id: "${postId}") 
+                mutation DeletPost($postId: ID!){
+                    deletePost(id: $postId) 
                 }
             `,
+            variables: {
+                postId: postId,
+            },
         };
         // REST API
         // fetch('http://localhost:8080/feed/post/' + postId, {

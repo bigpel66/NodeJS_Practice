@@ -22,8 +22,8 @@ class SinglePost extends Component {
 
         const graphqlQuery = {
             query: `
-                {
-                    readPost(id: "${postId}") {
+                query ReadPost($postId: ID!){
+                    readPost(id: $postId) {
                         title
                         content
                         imageUrl
@@ -34,6 +34,9 @@ class SinglePost extends Component {
                     }
                 }
             `,
+            variables: {
+                postId: postId,
+            },
         };
 
         fetch('http://localhost:8080/graphql', {
@@ -67,7 +70,7 @@ class SinglePost extends Component {
                     ).toLocaleDateString('en-US'),
                     content: resData.data.readPost.content,
                 });
-                
+
                 // REST API
                 // this.setState({
                 //     title: resData.post.title,
