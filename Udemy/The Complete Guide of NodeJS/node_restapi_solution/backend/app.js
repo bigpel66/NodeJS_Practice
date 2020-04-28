@@ -40,8 +40,7 @@ const fileFileter = (req, file, cb) => {
 };
 
 const clearImage = (filePath) => {
-    console.log(__dirname);
-    filePath = path.join(__dirname , filePath);
+    filePath = path.join(__dirname, filePath);
     fs.unlink(filePath, (err) => {
         if (err) {
             console.log(err);
@@ -86,7 +85,6 @@ app.put('/post-image', (request, response, next) => {
         return response.status(200).json({ message: 'No file provided!' });
     }
 
-    console.log(request.body.oldPath);
     if (request.body.oldPath) {
         clearImage(request.body.oldPath);
     }
