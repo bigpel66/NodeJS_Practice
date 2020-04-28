@@ -1,5 +1,4 @@
 const path = require('path');
-const fs = require('fs');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -11,6 +10,7 @@ const graphqlSchema = require('./graphql/schema');
 const graphqlResolver = require('./graphql/resolvers');
 
 const auth = require('./middleware/auth');
+const { clearImage } = require('./utility/file');
 
 // DELETED TO USE GRAPHQL
 // const feedRoutes = require('./routes/feed');
@@ -37,15 +37,6 @@ const fileFileter = (req, file, cb) => {
     } else {
         cb(null, false);
     }
-};
-
-const clearImage = (filePath) => {
-    filePath = path.join(__dirname, filePath);
-    fs.unlink(filePath, (err) => {
-        if (err) {
-            console.log(err);
-        }
-    });
 };
 
 app.use(bodyParser.json());
