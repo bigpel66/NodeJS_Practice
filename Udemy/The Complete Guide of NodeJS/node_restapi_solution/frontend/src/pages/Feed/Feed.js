@@ -24,19 +24,44 @@ class Feed extends Component {
     };
 
     componentDidMount() {
-        fetch('http://localhost:8080/auth/status', {
+        // REST API
+        // fetch('http://localhost:8080/auth/status', {
+        //     headers: {
+        //         Authorization: 'Bearer ' + this.props.token,
+        //     },
+        // })
+        const graphqlQuery = {
+            query: `
+                {
+                    user {
+                        status
+                    }
+                }
+            `,
+        };
+
+        fetch('http://localhost:8080/graphql', {
+            method: 'POST',
             headers: {
                 Authorization: 'Bearer ' + this.props.token,
+                'Content-Type': 'application/json',
             },
+            body: JSON.stringify(graphqlQuery),
         })
             .then((res) => {
-                if (res.status !== 200) {
-                    throw new Error('Failed to fetch user status.');
-                }
+                // REST API
+                // if (res.status !== 200) {
+                //     throw new Error('Failed to fetch user status.');
+                // }
                 return res.json();
             })
             .then((resData) => {
-                this.setState({ status: resData.status });
+                if (resData.errors) {
+                    throw new Error('Fetching status failed.');
+                }
+
+                this.setState({ status: resData.data.user.status });
+                // this.setState({ status: resData.status });
             })
             .catch(this.catchError);
 
@@ -169,22 +194,48 @@ class Feed extends Component {
 
     statusUpdateHandler = (event) => {
         event.preventDefault();
-        fetch('http://localhost:8080/auth/status', {
-            method: 'PATCH',
+
+        // REST API
+        // fetch('http://localhost:8080/auth/status', {
+        //     method: 'PATCH',
+        //     headers: {
+        //         Authorization: 'Bearer ' + this.props.token,
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({ status: this.state.status }),
+        // })
+        const graphqlQuery = {
+            query: `
+                 mutation {
+                    updateStatus(status: "${this.state.status}") {
+                        status
+                    }
+                }
+            `,
+        };
+
+        fetch('http://localhost:8080/graphql', {
+            method: 'POST',
             headers: {
                 Authorization: 'Bearer ' + this.props.token,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ status: this.state.status }),
+            body: JSON.stringify(graphqlQuery),
         })
             .then((res) => {
-                if (res.status !== 200 && res.status !== 201) {
-                    throw new Error("Can't update status!");
-                }
+                console.log(2);
+                // REST API
+                // if (res.status !== 200 && res.status !== 201) {
+                //     throw new Error("Can't update status!");
+                // }
                 return res.json();
             })
             .then((resData) => {
                 console.log(resData);
+
+                if (resData.errors) {
+                    throw new Error('Updating status failed.');
+                }
             })
             .catch(this.catchError);
     };
@@ -332,12 +383,14 @@ class Feed extends Component {
 
                 this.setState((prevState) => {
                     let updatedPosts = [...prevState.posts];
+                    let updatedTotalPosts = prevState.totalPosts;
                     if (prevState.editPost) {
                         const postIndex = prevState.posts.findIndex(
                             (p) => p._id === prevState.editPost._id
                         );
                         updatedPosts[postIndex] = post;
                     } else {
+                        updatedTotalPosts++;
                         if (prevState.posts.length >= 2) {
                             updatedPosts.pop();
                         }
@@ -348,6 +401,7 @@ class Feed extends Component {
                         isEditing: false,
                         editPost: null,
                         editLoading: false,
+                        totalPosts: updatedTotalPosts,
                     };
                 });
             })
