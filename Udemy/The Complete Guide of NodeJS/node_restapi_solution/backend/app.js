@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -37,6 +38,16 @@ const fileFileter = (req, file, cb) => {
         cb(null, false);
     }
 };
+
+const clearImage = (filePath) => {
+    filePath = path.join(__dirname, '..', filePath);
+    fs.unlink(filePath, (err) => {
+        if (err) {
+            console.log(err);
+        }
+    });
+};
+
 app.use(bodyParser.json());
 app.use(
     multer({
@@ -64,6 +75,24 @@ app.use((request, response, next) => {
 });
 
 app.use(auth);
+
+app.put('/post-image', (request, response, next) => {
+    if (!request.isAuth) {
+        throw new Error('Not authenticated!');
+    }
+
+    if (!request.file) {
+        return response.status(200).json({ message: 'No file provided!' });
+    }
+
+    if (request.body.oldPath) {
+        clearImage(request.body.oldPath);
+    }
+
+    return response
+        .status(201)
+        .json({ message: 'File stored.', filePath: request.file.path });
+});
 
 app.use(
     '/graphql',
