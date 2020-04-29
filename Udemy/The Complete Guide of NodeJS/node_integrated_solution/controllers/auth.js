@@ -11,7 +11,7 @@ const User = require('../models/user');
 const transporter = nodemailer.createTransport(
     sendgridTransport({
         auth: {
-            api_key: 'blocked',
+            api_key: process.env.SENDGRID_KEY,
         },
     })
 );
@@ -196,7 +196,7 @@ module.exports.postSignUp = (request, response, next) => {
             transporter
                 .sendMail({
                     to: email,
-                    from: 'bigpel66@gmail.com',
+                    from: process.env.SENDGRID_EMAIL,
                     subject: 'Congratulations! Sign Up Succeeded!',
                     html: '<h1>You successfully signed up!</h1>',
                 })
@@ -257,7 +257,7 @@ module.exports.postReset = (request, response, next) => {
 
                 transporter.sendMail({
                     to: request.body.email,
-                    from: 'bigpel66@gmail.com',
+                    from: process.env.SENDGRID_EMAIL,
                     subject: 'Password Reset',
                     html: `
                     <p>You requested a password reset!</p>

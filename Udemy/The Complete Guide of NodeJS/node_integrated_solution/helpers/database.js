@@ -17,7 +17,7 @@
 
 // const mongoConnect = (cb) => {
 //     MongoClient.connect(
-//         'mongodb+srv://bigpel66:JasonSeo@cluster0-2e6no.mongodb.net/shop?retryWrites=true&w=majority'
+//         `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-2e6no.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`
 //     )
 //         .then((client) => {
 //             db = client.db();

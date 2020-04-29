@@ -19,8 +19,7 @@ const multer = require('multer');
 
 // const User = require('./models/user');
 
-const MONGODB_URI =
-    'mongodb+srv://bigpel66:JasonSeo@cluster0-2e6no.mongodb.net/shop?retryWrites=true&w=majority';
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-2e6no.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}?retryWrites=true&w=majority`;
 
 const mongoose = require('mongoose');
 const User = require('./models/user');
@@ -186,7 +185,7 @@ app.use((error, request, response, next) => {
 //     })
 //     .then((user) => {
 //         if (!user) {
-//             return User.create({ name: 'Jason', email: 'bigpel66@gmail.com' });
+//             return User.create({ name: 'Jason', email: process.env.SENDGRID_EMAIL });
 //         }
 //         return user;
 //     })
@@ -214,7 +213,7 @@ app.use((error, request, response, next) => {
 mongoose
     .connect(MONGODB_URI)
     .then((result) => {
-        app.listen(3000);
+        app.listen(process.env.PORT || 3000);
     })
     .catch((error) => {
         if (error) {
