@@ -4,6 +4,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 
+const helmet = require('helmet');
+const compression = require('compression');
+
 // SEQUELIZE MODELS
 // const sequelize = require('./helpers/database');
 
@@ -67,6 +70,9 @@ const fileFilter = (request, file, cb) => {
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
+
+// app.use(helmet());
+app.use(compression());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
