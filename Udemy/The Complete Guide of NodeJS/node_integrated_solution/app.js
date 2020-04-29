@@ -1,4 +1,6 @@
 const path = require('path');
+const fs = require('fs');
+const https = require('https');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -6,6 +8,7 @@ const multer = require('multer');
 
 const helmet = require('helmet');
 const compression = require('compression');
+const morgan = require('morgan');
 
 // SEQUELIZE MODELS
 // const sequelize = require('./helpers/database');
@@ -38,6 +41,10 @@ const store = new MongoDBStore({
 const csurf = require('csurf');
 const csurfProtection = csurf();
 
+// Custom SSL
+// const privateKey = fs.readFileSync('server.key');
+// const certificate = fs.readFileSync('server.cert');
+
 const flash = require('connect-flash');
 
 const adminRoutes = require('./routes/admin');
@@ -68,11 +75,17 @@ const fileFilter = (request, file, cb) => {
     }
 };
 
+const accessLogStream = fs.createWriteStream(
+    path.join(__dirname, 'access.log'),
+    { flags: 'a' }
+);
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-// app.use(helmet());
+app.use(helmet());
 app.use(compression());
+app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
@@ -219,7 +232,13 @@ app.use((error, request, response, next) => {
 mongoose
     .connect(MONGODB_URI)
     .then((result) => {
+        // HTTP Protocol
         app.listen(process.env.PORT || 3000);
+
+        // HTTPS, Custom SSL, Not using Host Provider
+        // https
+        //     .createServer({ key: privateKey, cert: certificate }, app)
+        //     .listen(process.env.PORT || 3000);
     })
     .catch((error) => {
         if (error) {
