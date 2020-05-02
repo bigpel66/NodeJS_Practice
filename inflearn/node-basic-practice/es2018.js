@@ -237,4 +237,19 @@
 //             console.log('Error: ', err);
 //         }
 //     });
+// -----------------------------------------------------------------------------------------------------------------
+// PROMISE ALL METHOD
+// const firstPromise = Promise.resolve('first');
+// const secondPromise = Promise.resolve('second');
+// const thirdPromise = Promise.resolve('third');
+// const errorPromise = Promise.reject('error');
+// Promise.all([firstPromise, secondPromise, thirdPromise, errorPromise])
+//     .then((res) => {
+//         console.log('Result: ', res);
+//     })
+//     .catch((err) => {
+//         if (err) {
+//             console.log('Error: ', err);
+//         }
+//     });
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
