@@ -153,4 +153,11 @@
 // getCandy(); // Does not work
 // getCandy.bind(candyMachine)();
 // getCandy.call(candyMachine);
+
+// ARRAY DESTRUCTURING
+// const array = ['node', {}, 10, true];
+// const [node, obj, , bool] = array;
+// console.log(node);
+// console.log(obj);
+// console.log(bool);
 // ---------------------------------------------------------------------------
