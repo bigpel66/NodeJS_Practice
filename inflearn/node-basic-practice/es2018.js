@@ -118,6 +118,39 @@
 // DESTRUCTURING
 // ---------------------------------------------------------------------------
 // BEFORE ES6
+// var candyMachine = {
+//     status: {
+//         name: 'node',
+//         count: 5,
+//     },
+//     getCandy: function () {
+//         this.status.count--;
+//         console.log(this.status.count);
+//         return this.status.count;
+//     },
+// };
+// var status = candyMachine.status;
+// var getCandy = candyMachine.getCandy;
+// console.log(status);
+// getCandy(); // Does not work
+// getCandy.bind(candyMachine)();
+// getCandy.call(candyMachine);
 
 // AFTER ES6
+// const candyMachine = {
+//     status: {
+//         name: 'node',
+//         count: 5,
+//     },
+//     getCandy() {
+//         this.status.count--;
+//         console.log(this.status.count);
+//         return this.status.count;
+//     },
+// };
+// const { status, getCandy } = candyMachine;
+// console.log(status);
+// getCandy(); // Does not work
+// getCandy.bind(candyMachine)();
+// getCandy.call(candyMachine);
 // ---------------------------------------------------------------------------
