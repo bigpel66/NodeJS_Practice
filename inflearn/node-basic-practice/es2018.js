@@ -160,4 +160,24 @@
 // console.log(node);
 // console.log(obj);
 // console.log(bool);
+
+// ARGUMENTS KEYWORD
+// var args = [1, 2, 3, 4, 5];
+// function o() {
+//     console.log(arguments);
+// }
+// o(args);
+
+// SPREAD OPERATOR EXAMPLE 1
+// const array = ['node', {}, 10, true];
+// const [node, obj, ...rest] = array;
+// console.log(node);
+// console.log(obj);
+// console.log(rest);
+
+// SPREAD OPERATOR EXAMPLE 2
+// const m = (x, y) => console.log(x, y);
+// m(5, 6);
+// const n = (x, ...y) => console.log(x, y);
+// n(5, 6, 7, 8, 9);
 // ---------------------------------------------------------------------------
