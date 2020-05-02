@@ -181,3 +181,22 @@
 // const n = (x, ...y) => console.log(x, y);
 // n(5, 6, 7, 8, 9);
 // ---------------------------------------------------------------------------
+
+const promise = new Promise((resolve, reject) => {
+    const a = 1;
+    const b = 3;
+    if (a + b > 2) {
+        resolve(a + b);
+    } else {
+        reject(a + b);
+    }
+});
+promise
+    .then((res) => {
+        console.log('Result: ', res);
+    })
+    .catch((err) => {
+        if (err) {
+            console.log('An Error: ', err);
+        }
+    });
