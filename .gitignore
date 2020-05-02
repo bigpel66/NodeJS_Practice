@@ -1,0 +1,15 @@
+.DS_Store
+
+#inflearn
+./inflearn/.DS_Store
+./inflearn/Node.js\ 교과서/.DS_Store
+./inflearn/Node.js\ 교과서/node_basic_practice/.DS_Store
+
+#Udemy
+./Udemy/.DS_Store
+./Udemy/The\ Complete\ Guide\ of\ NodeJS/.DS_Store
+./Udemy/The\ Complete\ Guide\ of\ NodeJS/assignments/.DS_Store
+./Udemy/The\ Complete\ Guide\ of\ NodeJS/node_tdd_practice/.DS_Store
+./Udemy/The\ Complete\ Guide\ of\ NodeJS/node_integrated_solution/.DS_Store
+./Udemy/The\ Complete\ Guide\ of\ NodeJS/node_restapi_solution/.DS_Store
+./Udemy/The\ Complete\ Guide\ of\ NodeJS/node_restapi_solution/backend/.DS_Store
