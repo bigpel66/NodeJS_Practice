@@ -1,4 +1,4 @@
-const A = require('./globalA');
+const A = require('./object-globalA');
 
 global.message = 'Hi';
 
