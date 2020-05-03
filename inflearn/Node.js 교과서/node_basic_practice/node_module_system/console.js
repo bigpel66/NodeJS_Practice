@@ -27,9 +27,7 @@ console.timeEnd('전체 시간');
 function secondRoute() {
     console.trace('에러 위치 추적');
 }
-
 function firstRoute() {
     secondRoute();
 }
-
 firstRoute();
