@@ -1,14 +1,15 @@
 const http = require('http');
+const fs = require('fs');
 
 const server = http
     .createServer((req, res) => {
         console.log('Server Start');
-        res.write('<h1>Hello Node.js</h1>');
-        res.write('<h2>This is JavaScript</h2>');
-        res.write('<h2>This is JavaScript</h2>');
-        res.write('<h2>This is JavaScript</h2>');
-        res.write('<h2>This is JavaScript</h2>');
-        res.end('<p>Hello Server!</p>');
+        fs.readFile('./server.html', (err, data) => {
+            if (err) {
+                throw err;
+            }
+            res.end(data);
+        });
     })
     .listen(8080);
 
