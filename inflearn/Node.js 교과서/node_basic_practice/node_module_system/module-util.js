@@ -20,16 +20,24 @@ crypto.randomBytes(64, (err, buf) => {
 // After Promisify
 const randomBytesPromise = util.promisify(crypto.randomBytes);
 const pbkdf2Promise = util.promisify(crypto.pbkdf2);
+// THEN CATCH
 randomBytesPromise(64)
     .then((result) => {
         const salt = result.toString('base64');
         return pbkdf2Promise('비밀번호', salt, 100000, 64, 'sha512');
     })
     .then((key) => {
-        console.log('key from Promisify Function: ', key.toString('base64'));
+        console.log('key from Then Catch: ', key.toString('base64'));
     })
     .catch((err) => {
         if (err) {
             console.error(err);
         }
     });
+// ASYNC AWAIT
+(async () => {
+    const buf = await randomBytesPromise(64);
+    const salt = buf.toString('base64');
+    const key = await pbkdf2Promise('비밀번호', salt, 100000, 64, 'sha512');
+    console.log('key from Async Await: ', key.toString('base64'));
+})();
