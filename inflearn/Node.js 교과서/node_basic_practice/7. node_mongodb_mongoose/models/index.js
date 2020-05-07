@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const { url } = require('../config/config.json');
 
 const connect = async () => {
+    if (process.env.NODE_ENV !== 'production') {
+        mongoose.set('debug', true);
+    }
+    
     try {
         await mongoose.connect(url);
         console.log('MongoDB Connection Succeed');
