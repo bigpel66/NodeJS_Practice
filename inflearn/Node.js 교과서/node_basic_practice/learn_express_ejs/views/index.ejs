@@ -1,0 +1,11 @@
+<%- include('./index-header') %>
+        <h1><%= title %></h1>
+        <% for (i of ['apple', 'pair', 'orange']) { %>
+        <p>Welcome to <%= i %></p>
+        <% } %> 
+        <% if (title == 'ejs') { %>
+          <p>EJS Study</p>
+        <% } else { %>
+          <p>Pug Study</p>
+        <% } %>
+<%- include('./index-footer') %>
