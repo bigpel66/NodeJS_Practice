@@ -8,7 +8,11 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const commentsRouter = require('./routes/comments');
 
+const connect = require('./models/index');
+
 const app = express();
+
+connect();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
