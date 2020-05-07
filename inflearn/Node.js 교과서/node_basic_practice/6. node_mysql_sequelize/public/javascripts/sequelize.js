@@ -167,3 +167,7 @@ document
         e.target.userid.value = '';
         e.target.comment.value = '';
     });
+
+window.onload = () => {
+    getUser();
+};

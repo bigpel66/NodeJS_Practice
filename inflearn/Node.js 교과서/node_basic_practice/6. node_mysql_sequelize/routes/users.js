@@ -1,11 +1,28 @@
 const express = require('express');
 const router = express.Router();
+const { User } = require('../models/index');
 
-/* GET users listing. */
 router
-    .get('/', (req, res, next) => {
-        res.send('respond with a resource');
+    .get('/', async (req, res, next) => {
+        try {
+            const users = await User.findAll();
+            res.json(users);
+        } catch (err) {
+            throw err;
+        }
     })
-    .post('/', (req, res, next) => {});
+    .post('/', async (req, res, next) => {
+        try {
+            const createdUser = await User.create({
+                name: req.body.name,
+                age: req.body.age,
+                married: req.body.married,
+            });
+            console.log(createdUser);
+            res.status(201).json(createdUser);
+        } catch (err) {
+            throw err;
+        }
+    });
 
 module.exports = router;
