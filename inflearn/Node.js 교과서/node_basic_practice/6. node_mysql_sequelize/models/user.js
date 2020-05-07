@@ -2,12 +2,13 @@ module.exports = (sequelize, DataTypes) => {
     return sequelize.define(
         'user',
         {
-            id: {
-                type: DataTypes.INTEGER,
-                autoIncrement: true,
-                unique: true,
-                primaryKey: true,
-            },
+            // OMITTABLE
+            // id: {
+            //     type: DataTypes.INTEGER,
+            //     autoIncrement: true,
+            //     unique: true,
+            //     primaryKey: true,
+            // },
             name: {
                 type: DataTypes.STRING(20),
                 allowNull: false,

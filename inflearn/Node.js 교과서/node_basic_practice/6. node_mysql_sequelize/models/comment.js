@@ -2,13 +2,13 @@ module.exports = (sequelize, DataTypes) => {
     return sequelize.define(
         'commnet',
         {
-            id: {
-                type: DataTypes.INTEGER,
-                autoIncrement: true,
-                allowNull: false,
-                primaryKey: true,
-            },
-            commenter: {},
+            // OMITTABLE
+            // id: {
+            //     type: DataTypes.INTEGER,
+            //     autoIncrement: true,
+            //     allowNull: false,
+            //     primaryKey: true,
+            // },
             comment: { type: DataTypes.STRING(100), allowNull: false },
             createdAt: {
                 type: DataTypes.DATE,
