@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const writeStream = fs.createWriteStream('../files/WRITESTREAM.txt', {
+const writeStream = fs.createWriteStream('./files/WRITESTREAM.txt', {
     highWaterMark: 16,
 });
 
