@@ -8,9 +8,7 @@ router
         try {
             const comments = await Comment.find({
                 commenter: new mongodb.ObjectId(req.params.id),
-            });
-
-            console.log(1);
+            }).populate('commenter');
 
             res.json(comments);
         } catch (err) {
