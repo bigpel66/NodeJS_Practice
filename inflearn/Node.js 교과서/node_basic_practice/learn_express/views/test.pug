@@ -1,21 +1,20 @@
-<!DOCTYPE html>
-html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport" content="width=device-width, initial-scale=1.0")
-        title = title1 + ' ' + title2
-        link(rel='stylesheet' href='/stylesheets/style.css')
-    body
-        #jasonseo(width=500)
+extends test-layout
+
+block content
+    #jasonseo(width=500)
         span.express.nodejs
-        button(type='submit') 전송
+        button(type='submit') Sutmit
+
+        if variable 
+            div It's true
+        else 
+            div It's false
+
+        for i in fruits
+            div= i
 
         p
-            |   안녕하세요.
-            |   여러줄을 입력합니다.
+            |   Hi!
+            |   Enable Multi Lines
             br
-            |   태그도 중간에 넣을 수 있습니다.
-
-        script.
-            var message = 'pug';
-            alert(message);
+            |   Tag can be inserted.

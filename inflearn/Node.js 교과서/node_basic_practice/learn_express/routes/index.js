@@ -7,6 +7,7 @@ router.get('/', function (req, res, next) {
     res.render('test', {
         title1: 'Pug',
         title2: 'Template',
+        fruits: ['Apple', 'Pear', 'Orange'],
     });
 });
 
