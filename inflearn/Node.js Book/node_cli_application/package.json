@@ -2,17 +2,14 @@
   "name": "node_cli_application",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^2.0.3"
-  },
+  "devDependencies": {},
   "bin": {
-    "cli": "./app.js"
+    "cli": "./template.js"
   }
 }

@@ -21,12 +21,12 @@ const htmlTemplate = `
 `;
 
 const routerTemplate = `
-    const express = require('express);
+    const express = require('express');
     const router = express.Router();
 
     router.get('/', (req, res, next) => {
         try {
-            res.sned('ok)
+            res.send('ok')
         } catch(err) {
             console.error(err)
             next(err);
@@ -35,23 +35,45 @@ const routerTemplate = `
     module.exports = router;
 `;
 
-const exist = () => {};
+const exist = (dir) => {
+    try {
+        fs.accessSync(
+            dir,
+            fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK
+        );
+        return true;
+    } catch (err) {
+        return false;
+    }
+};
 
-const mkdir = () => {};
+const mkdir = (dir) => {
+    const dirname = path
+        .relative('.', path.normalize(dir))
+        .split(path.sep)
+        .filter((p) => {
+            return !!p; // to filter undefined
+        });
+
+    dirname.forEach((val, index) => {
+        const pathBuilder = dirname.slice(0, index + 1).join(path.sep);
+        if (!exist(pathBuilder)) {
+            fs.mkdirSync(pathBuilder);
+        }
+    });
+};
 
 const makeTemplate = () => {
-    mkdir(directory); // TODO: implement
+    mkdir(directory);
     if (type === 'html') {
         const pathToFile = path.join(directory, `${name}.html`);
         if (exist(pathToFile)) {
-            // TODO: implement
             console.error('Already Exists');
         } else {
             fs.writeFileSync(pathToFile, htmlTemplate);
             console.log(pathToFile, 'Generated');
         }
     } else if (type === 'express-router') {
-        // TODO: implement
         const pathToFile = path.join(directory, `${name}.js`);
         if (exist(pathToFile)) {
             console.error('Already Exists');
