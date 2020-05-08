@@ -2,10 +2,12 @@
 // TEMPLATE GENERATOR
 const fs = require('fs');
 const path = require('path');
+const readline = require('readline');
 
-const type = process.argv[2]; // Which Template to Generate
-const name = process.argv[3]; // File Name for Template
-const directory = process.argv[4] || '.'; // Path for Template
+let rl;
+let type = process.argv[2]; // Which Template to Generate
+let name = process.argv[3]; // File Name for Template
+let directory = process.argv[4] || '.'; // Path for Template
 
 const htmlTemplate = `
     <html>
@@ -86,9 +88,47 @@ const makeTemplate = () => {
     }
 };
 
+const dirAnswer = (answer) => {
+    directory = (answer && answer.trim()) || '.';
+    rl.close();
+    makeTemplate();
+};
+
+const nameAnswer = (answer) => {
+    if (!answer || !answer.trim()) {
+        console.clear();
+        console.log('File Name Should Not Be Null');
+        return rl.question('Type file name you want to use', nameAnswer);
+    }
+
+    name = answer;
+
+    return rl.question(
+        'Set the path where to save (Default for the current)',
+        dirAnswer
+    );
+};
+const typeAnswer = (answer) => {
+    if (answer !== 'html' && answer !== 'express-router') {
+        console.clear();
+        console.log(`Only Acccepted 'html' or 'express-router'`);
+        return rl.question('Choose template you want to use', typeAnswer);
+    }
+
+    type = answer;
+
+    return rl.question('Type file name you want to use', nameAnswer);
+};
+
 const program = () => {
     if (!type || !name) {
-        console.error('Example: cli html|express-router $fileName [$path]');
+        // console.error('Example: cli html|express-router $fileName [$path]');
+        rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+        });
+        console.clear();
+        rl.question('Choose template you want to use', typeAnswer);
     } else {
         makeTemplate();
     }
