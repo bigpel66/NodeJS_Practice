@@ -1,10 +1,8 @@
 #!/usr/bin/env node
-// TEMPLATE GENERATOR
+const program = require('commander');
 const fs = require('fs');
 const path = require('path');
-const readline = require('readline');
 
-let rl;
 let type = process.argv[2]; // Which Template to Generate
 let name = process.argv[3]; // File Name for Template
 let directory = process.argv[4] || '.'; // Path for Template
@@ -65,7 +63,7 @@ const mkdir = (dir) => {
     });
 };
 
-const makeTemplate = () => {
+const makeTemplate = (type, name, directory) => {
     mkdir(directory);
     if (type === 'html') {
         const pathToFile = path.join(directory, `${name}.html`);
@@ -88,50 +86,23 @@ const makeTemplate = () => {
     }
 };
 
-const dirAnswer = (answer) => {
-    directory = (answer && answer.trim()) || '.';
-    rl.close();
-    makeTemplate();
-};
+program.version('0.0.1', '-v, --version').usage('[options]');
 
-const nameAnswer = (answer) => {
-    if (!answer || !answer.trim()) {
-        console.clear();
-        console.log('File Name Should Not Be Null');
-        return rl.question('Type file name you want to use', nameAnswer);
-    }
+program
+    .command('template <type>')
+    .usage('--filename <filename> --filepath [filepath]')
+    .description('Template Generation')
+    .alias('tmpl')
+    .option('-fn, --filename <filename>', 'Type File Name', 'index')
+    .option('-fp, --filepath [filepath]', 'Type File Path', '.')
+    .action((type, options) => {
+        // console.log(type, options.filename, options.filepath);
+        makeTemplate(type, options.filename, options.filepath);
+    });
 
-    name = answer;
+program.command('*', { noHelp: true }).action(() => {
+    console.log('No Command Found');
+    program.help();
+});
 
-    return rl.question(
-        'Set the path where to save (Default for the current)',
-        dirAnswer
-    );
-};
-const typeAnswer = (answer) => {
-    if (answer !== 'html' && answer !== 'express-router') {
-        console.clear();
-        console.log(`Only Acccepted 'html' or 'express-router'`);
-        return rl.question('Choose template you want to use', typeAnswer);
-    }
-
-    type = answer;
-
-    return rl.question('Type file name you want to use', nameAnswer);
-};
-
-const program = () => {
-    if (!type || !name) {
-        // console.error('Example: cli html|express-router $fileName [$path]');
-        rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout,
-        });
-        console.clear();
-        rl.question('Choose template you want to use', typeAnswer);
-    } else {
-        makeTemplate();
-    }
-};
-
-program();
+program.parse(process.argv);
