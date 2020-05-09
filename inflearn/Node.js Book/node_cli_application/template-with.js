@@ -70,21 +70,23 @@ const makeTemplate = (type, name, directory) => {
     if (type === 'html') {
         const pathToFile = path.join(directory, `${name}.html`);
         if (exist(pathToFile)) {
-            console.error('Already Exists');
+            console.error(chalk.bold.red('Already Exists'));
         } else {
             fs.writeFileSync(pathToFile, htmlTemplate);
-            console.log(pathToFile, 'Generated');
+            console.log(chalk.green(pathToFile, 'Generated'));
         }
     } else if (type === 'express-router') {
         const pathToFile = path.join(directory, `${name}.js`);
         if (exist(pathToFile)) {
-            console.error('Already Exists');
+            console.error(chalk.bold.red('Already Exists'));
         } else {
             fs.writeFileSync(pathToFile, routerTemplate);
-            console.log(pathToFile, 'Generated');
+            console.log(chalk.green(pathToFile, 'Generated'));
         }
     } else {
-        console.error('Example: cli html|express-router $fileName [$path]');
+        console.error(
+            chalk.bold.red('Example: cli html|express-router $fileName [$path]')
+        );
     }
 };
 
@@ -104,7 +106,7 @@ program
 
 program.action(async (cmd, args) => {
     if (args) {
-        console.log(chalk.bold.red('No Command Found'));
+        console.error(chalk.bold.red('No Command Found'));
         program.help();
     } else {
         const answers = await inquirer.prompt([
