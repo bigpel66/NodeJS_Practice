@@ -104,7 +104,7 @@ program
 
 program.action(async (cmd, args) => {
     if (args) {
-        console.log(chalk.bold).red('No Command Found');
+        console.log(chalk.bold.red('No Command Found'));
         program.help();
     } else {
         const answers = await inquirer.prompt([
