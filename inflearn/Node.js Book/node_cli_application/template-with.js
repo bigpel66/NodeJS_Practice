@@ -1,7 +1,9 @@
 #!/usr/bin/env node
-const program = require('commander');
 const fs = require('fs');
 const path = require('path');
+const program = require('commander');
+const inquirer = require('inquirer');
+const chalk = require('chalk');
 
 let type = process.argv[2]; // Which Template to Generate
 let name = process.argv[3]; // File Name for Template
@@ -86,7 +88,7 @@ const makeTemplate = (type, name, directory) => {
     }
 };
 
-program.version('0.0.1', '-v, --version').usage('[options]');
+program.version('0.0.1', '-v, --version').name('cli').usage('[options]');
 
 program
     .command('template <type>')
@@ -100,9 +102,38 @@ program
         makeTemplate(type, options.filename, options.filepath);
     });
 
-program.command('*', { noHelp: true }).action(() => {
-    console.log('No Command Found');
-    program.help();
+program.action(async (cmd, args) => {
+    if (args) {
+        console.log(chalk.bold).red('No Command Found');
+        program.help();
+    } else {
+        const answers = await inquirer.prompt([
+            {
+                type: 'list',
+                name: 'type',
+                message: 'Choose Template',
+                choices: ['html', 'express-router'],
+            },
+            {
+                type: 'input',
+                name: 'name',
+                message: 'Type File Name',
+                default: 'index',
+            },
+            {
+                type: 'input',
+                name: 'directory',
+                message: 'Type File Path',
+                default: '.',
+            },
+            { type: 'confirm', name: 'confirm', message: 'Confirm?' },
+        ]);
+
+        if (answers.confirm) {
+            makeTemplate(answers.type, answers.name, answers.directory);
+            console.log(chalk.rgb(128, 128, 128)('CLI Terminated'));
+        }
+    }
 });
 
 program.parse(process.argv);
