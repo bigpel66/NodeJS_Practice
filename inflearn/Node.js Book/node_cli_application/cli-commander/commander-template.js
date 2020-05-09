@@ -5,9 +5,9 @@ const program = require('commander');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
 
-let type = process.argv[2]; // Which Template to Generate
-let name = process.argv[3]; // File Name for Template
-let directory = process.argv[4] || '.'; // Path for Template
+// let type = process.argv[2]; // Which Template to Generate
+// let name = process.argv[3]; // File Name for Template
+// let directory = process.argv[4] || '.'; // Path for Template
 
 const htmlTemplate = `
     <html>
