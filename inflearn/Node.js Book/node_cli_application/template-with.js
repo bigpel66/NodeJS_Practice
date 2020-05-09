@@ -90,6 +90,22 @@ const makeTemplate = (type, name, directory) => {
     }
 };
 
+const copyFile = (source, destination) => {
+    if (exist(source)) {
+        mkdir(destination);
+        fs.copyFileSync(
+            source,
+            path.join(
+                destination,
+                `${source.split('.')[0]}-copied${path.extname(source)}`
+            )
+        );
+        console.log(chalk.green(`${source}File Copied`));
+    } else {
+        console.log(chalk.red('No File Found'));
+    }
+};
+
 program.version('0.0.1', '-v, --version').name('cli').usage('[options]');
 
 program
@@ -102,6 +118,14 @@ program
     .action((type, options) => {
         // console.log(type, options.filename, options.filepath);
         makeTemplate(type, options.filename, options.filepath);
+    });
+
+program
+    .command('copy <source> <destination>')
+    .usage('<source> <destination>')
+    .description('Copy File')
+    .action((source, destination) => {
+        copyFile(source, destination);
     });
 
 program.action(async (cmd, args) => {
