@@ -106,6 +106,24 @@ const copyFile = (source, destination) => {
     }
 };
 
+const rimraf = (dir) => {
+    if (exist(dir)) {
+        try {
+            const readDir = fs.readdirSync(dir);
+            readDir.forEach((val) => {
+                rimraf(path.join(dir, val));
+            });
+            fs.rmdirSync(dir);
+            console.log(chalk.green('Directory has been deleted'));
+        } catch (err) {
+            fs.unlinkSync(dir);
+            console.log(chalk.green('File has been deleted'));
+        }
+    } else {
+        console.log(chalk.red('No Directory Found'));
+    }
+};
+
 program.version('0.0.1', '-v, --version').name('cli').usage('[options]');
 
 program
@@ -126,6 +144,14 @@ program
     .description('Copy File')
     .action((source, destination) => {
         copyFile(source, destination);
+    });
+
+program
+    .command('rimraf <dir>')
+    .usage('<dir>')
+    .description('Designated Directory Totally Deleted')
+    .action((dir) => {
+        rimraf(dir);
     });
 
 program.action(async (cmd, args) => {
