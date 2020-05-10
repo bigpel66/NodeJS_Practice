@@ -4,10 +4,12 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash');
-const { sequelize } = require('./models/index');
+const passport = require('passport');
 
 const indexRouter = require('./routes/index');
 const userRouter = require('./routes/user');
+const { sequelize } = require('./models/index');
+const passportConfig = require('./passport/index');
 
 require('dotenv').config();
 
@@ -36,6 +38,8 @@ app.use(
     })
 );
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', indexRouter);
 
