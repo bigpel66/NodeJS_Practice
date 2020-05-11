@@ -54,7 +54,7 @@ module.exports.postLogin = (req, res, next) => {
 
 module.exports.getLogout = (req, res, next) => {
     req.logout();
+    delete userInfo[req.user.id];
     req.session.destroy();
-    userInfo = {};
     res.redirect('/');
 };
