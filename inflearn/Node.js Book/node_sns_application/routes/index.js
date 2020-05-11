@@ -1,11 +1,12 @@
 const express = require('express');
 const indexController = require('../controller/index');
+const { isLoggedIn, isNotLoggedIn } = require('../controller/middlewares');
 
 const router = express.Router();
 
-router.get('/profile', indexController.getProfile);
+router.get('/profile', isLoggedIn, indexController.getProfile);
 
-router.get('/join', indexController.getJoin);
+router.get('/join', isNotLoggedIn, indexController.getJoin);
 
 router.get('/', indexController.getMain);
 
