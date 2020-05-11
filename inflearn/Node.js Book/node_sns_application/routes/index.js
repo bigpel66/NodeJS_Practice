@@ -3,10 +3,10 @@ const indexController = require('../controller/index');
 
 const router = express.Router();
 
-router.get('/', indexController.getMain);
+router.get('/profile', indexController.getProfile);
 
 router.get('/join', indexController.getJoin);
 
-router.get('/profile', indexController.getProfile);
+router.get('/', indexController.getMain);
 
 module.exports = router;

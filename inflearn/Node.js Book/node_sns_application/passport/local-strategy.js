@@ -11,7 +11,9 @@ module.exports = (passport) => {
             },
             async (email, password, done) => {
                 try {
-                    const existingUser = await User.find({ where: { email } });
+                    const existingUser = await User.findOne({
+                        where: { email },
+                    });
 
                     if (existingUser) {
                         const result = await bcrypt.compare(
@@ -22,10 +24,10 @@ module.exports = (passport) => {
                         if (result) {
                             done(null, existingUser);
                         } else {
-                            done(null, false, { message: 'Invalid Password' });
+                            done(null, false, { message: 'Invalid User Info' });
                         }
                     } else {
-                        done(null, false, { message: 'No User Found' });
+                        done(null, false, { message: 'Invalid User Info' });
                     }
                 } catch (err) {
                     console.error(err);
