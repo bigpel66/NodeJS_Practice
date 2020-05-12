@@ -1,5 +1,6 @@
 const KakaoStrategy = require('passport-kakao').Strategy;
 const { User } = require('../models/index');
+let globalAccessToken = require('../access-token');
 
 module.exports = (passport) => {
     passport.use(
@@ -9,6 +10,10 @@ module.exports = (passport) => {
                 callbackURL: '/auth/kakao/callback',
             },
             async (accessToken, refreshToken, profile, done) => {
+                if (accessToken) {
+                    globalAccessToken.tokenize(accessToken);
+                }
+
                 try {
                     const existingUser = await User.findOne({
                         where: { snsId: profile.id, provider: 'kakao' },

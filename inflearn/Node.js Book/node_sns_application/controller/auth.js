@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const passport = require('passport');
+const rp = require('request-promise');
 const { User } = require('../models/index');
+let globalAccessToken = require('../access-token');
 
 module.exports.postJoin = async (req, res, next) => {
     const { email, password, nickname } = req.body;
@@ -51,7 +53,16 @@ module.exports.postLogin = (req, res, next) => {
     })(req, res, next);
 };
 
-module.exports.getLogout = (req, res, next) => {
+module.exports.getLogout = async (req, res, next) => {
+    if (req.user.provider === 'kakao') {
+        await rp({
+            url: 'https://kapi.kakao.com/v1/user/unlink',
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${globalAccessToken.readToken()}`,
+            },
+        });
+    }
     req.logout();
     req.session.destroy();
     res.redirect('/');
