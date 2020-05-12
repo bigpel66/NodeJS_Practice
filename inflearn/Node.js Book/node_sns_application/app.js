@@ -9,6 +9,7 @@ const passport = require('passport');
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const userRouter = require('./routes/user');
+
 const { sequelize } = require('./models/index');
 const passportConfig = require('./passport/index');
 

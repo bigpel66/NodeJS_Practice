@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const { User } = require('../models/index');
-let userInfo = require('../user-info');
 
 module.exports.postJoin = async (req, res, next) => {
     const { email, password, nickname } = req.body;
@@ -54,7 +53,17 @@ module.exports.postLogin = (req, res, next) => {
 
 module.exports.getLogout = (req, res, next) => {
     req.logout();
-    delete userInfo[req.user.id];
     req.session.destroy();
     res.redirect('/');
+};
+
+module.exports.getKakao = (req, res, next) => {
+    passport.authenticate('kakao')(req, res, next);
+};
+
+module.exports.getKakaoCallback = (req, res, next) => {
+    passport.authenticate('kakao', {
+        failureRedirect: '/',
+        successRedirect: '/',
+    })(req, res, next);
 };
