@@ -6,8 +6,37 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 
+// GLOBAL MULTER
+// const multer = require('multer');
+// const storage = multer.diskStorage({
+//     destination(req, file, cb) {
+//         cb(null, 'uploads/');
+//     },
+//     filename(req, file, cb) {
+//         cb(
+//             null,
+//             path.basename(file.originalname, extname) +
+//                 new Date().valueOf() +
+//                 extname
+//         );
+//     },
+// });
+// const fileFilter = (req, file, cb) => {
+//     if (['image/png', 'image/jpg', 'image/jpeg'].includes(file.mimetype)) {
+//         cb(null, true);
+//     } else {
+//         cb(null, false);
+//     }
+// };
+// const upload = multer({
+//     storage,
+//     fileFilter,
+//     limits: { fileSize: 5 * 1024 * 1024 },
+// });
+
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
+const postRouter = require('./routes/post');
 const userRouter = require('./routes/user');
 
 const { sequelize } = require('./models/index');
@@ -28,6 +57,10 @@ app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// GLOBAL MULTER MIDDLEWARE
+// app.use(upload.single('img'));
+
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
     session({
@@ -46,6 +79,7 @@ app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
+app.use('/post', postRouter);
 
 app.use((req, res, next) => {
     const err = new Error('Not Found 404');

@@ -55,13 +55,18 @@ module.exports.postLogin = (req, res, next) => {
 
 module.exports.getLogout = async (req, res, next) => {
     if (req.user.provider === 'kakao') {
-        await rp({
-            url: 'https://kapi.kakao.com/v1/user/unlink',
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${globalAccessToken.readToken()}`,
-            },
-        });
+        try {
+            await rp({
+                url: 'https://kapi.kakao.com/v1/user/unlink',
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${globalAccessToken.readToken()}`,
+                },
+            });
+        } catch (err) {
+            console.error(err);
+            globalAccessToken.tokenize(null);
+        }
     }
     req.logout();
     req.session.destroy();
