@@ -1,3 +1,5 @@
+const { Post, User } = require('../models/index');
+
 module.exports.getProfile = (req, res, next) => {
     res.render('profile', { title: 'Profile', user: req.user });
 };
@@ -10,11 +12,23 @@ module.exports.getJoin = (req, res, next) => {
     });
 };
 
-module.exports.getMain = (req, res, next) => {
-    res.render('main', {
-        title: 'NodeBird',
-        twits: [],
-        user: req.user,
-        loginError: req.flash('loginError'),
-    });
+module.exports.getMain = async (req, res, next) => {
+    try {
+        const posts = await Post.findAll({
+            include: {
+                model: User,
+                attributes: ['id', 'nickname'],
+            },
+        });
+
+        res.render('main', {
+            title: 'NodeBird',
+            twits: posts,
+            user: req.user,
+            loginError: req.flash('loginError'),
+        });
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
 };

@@ -15,10 +15,15 @@ fs.readdir('uploads', (error) => {
 router.post(
     '/img',
     isLoggedIn,
-    postController.postImage,
+    postController.postWithImage,
     postController.postImageRespond
 );
 
-router.post('/');
+router.post(
+    '/',
+    isLoggedIn,
+    postController.postWithoutImage,
+    postController.postText
+);
 
 module.exports = router;
