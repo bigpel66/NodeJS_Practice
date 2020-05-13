@@ -7,7 +7,6 @@ let globalAccessToken = require('../access-token');
 module.exports.postJoin = async (req, res, next) => {
     const { email, password, nickname } = req.body;
 
-    console.log(email, password, nickname);
     try {
         const existingUser = await User.findOne({ where: { email } });
 
@@ -57,7 +56,7 @@ module.exports.getLogout = async (req, res, next) => {
     if (req.user.provider === 'kakao') {
         try {
             await rp({
-                url: 'https://kapi.kakao.com/v1/user/unlink',
+                url: process.env.KAKAO_UNLINK_URL,
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${globalAccessToken.readToken()}`,
