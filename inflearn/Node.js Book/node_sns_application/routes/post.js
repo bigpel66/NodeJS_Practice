@@ -26,6 +26,8 @@ router.post(
     postController.postText
 );
 
+router.delete('/:id', isLoggedIn, postController.deleteText);
+
 router.get('/hashtag', postController.getHashtags);
 
 module.exports = router;

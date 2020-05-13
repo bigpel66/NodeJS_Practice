@@ -32,6 +32,8 @@ block content
                     if twit.img
                         .twit-img
                             img(src=twit.img alt='Thumbnail')
+                    if user && user.id === twit.user.id
+                        button.delete Delete
     script.
         if (document.getElementById('img')) {
             document.getElementById('img').addEventListener('change', function (e) {
@@ -96,6 +98,31 @@ block content
                             xhr.send();
                         }
                     }
+                }
+            });
+        });
+        document.querySelectorAll('.delete').forEach(function (tag) {
+            tag.addEventListener('click', function () {
+                var isLoggedIn = document.querySelector('#my-id');
+                var twitId = tag.parentNode.querySelector('.twit-id').value;
+                if(isLoggedIn) {
+                    var userId = tag.parentNode.querySelector('.twit-user-id').value;
+                    var myId = isLoggedIn.value;
+                    if(userId === myId) {
+                        if(confirm('Would you like to delete the post?')) {
+                            var xhr = new XMLHttpRequest();
+                            xhr.onload = function () {
+                                if(xhr.status === 200) {
+                                    location.reload();
+                                } else {
+                                    console.error(xhr.responseText);
+                                }
+                            }
+                            xhr.open('DELETE', '/post/' + twitId);
+                            xhr.send();
+                        }
+                    }
+                   
                 }
             });
         });
