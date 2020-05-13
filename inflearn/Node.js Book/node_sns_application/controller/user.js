@@ -25,3 +25,19 @@ module.exports.postUnFollow = async (req, res, next) => {
         next(err);
     }
 };
+
+module.exports.postProfile = async (req, res, next) => {
+    try {
+        await User.update(
+            { nickname: req.body.nickname },
+            {
+                where: { id: req.user.id },
+            }
+        );
+
+        res.redirect('/');
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};

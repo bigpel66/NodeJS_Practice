@@ -11,7 +11,7 @@ html
             .profile-wrap
                 .profile
                     if user && user.id
-                        .user-name= 'Hello, ' + user.nickname + '!'
+                        .user-name= 'Hello, ' + user.nickname
                         .half
                             div Followings
                             .count.following-count= user.Followings && user.Followings.length || 0
@@ -19,6 +19,7 @@ html
                             div Followers
                             .count.follower-count= user.Followers && user.Followers.length || 0
                         input#my-id(type='hidden' value=user.id)
+                        a.btn(href='/') Home
                         a#my-profile.btn(href='/profile') Profile
                         a#logout.btn(href='/auth/logout') Logout
                     else

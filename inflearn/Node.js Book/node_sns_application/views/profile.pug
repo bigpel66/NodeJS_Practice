@@ -2,6 +2,9 @@ extends layout
 
 block content
     .timeline
+        form#profile-form(method='POST', action='/user/profile')
+            input(name='nickname')
+            button Change Nickname
         .followings.half
             h2 Followings
             if user.Followings
