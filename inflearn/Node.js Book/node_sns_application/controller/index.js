@@ -20,6 +20,11 @@ module.exports.getMain = async (req, res, next) => {
                     model: User,
                     attributes: ['id', 'nickname'],
                 },
+                {
+                    model: User,
+                    attributes: ['id', 'nickname'],
+                    as: 'Liker',
+                },
             ],
             order: [['createdAt', 'DESC']],
         });

@@ -117,3 +117,27 @@ module.exports.deleteText = async (req, res, next) => {
         next(err);
     }
 };
+
+module.exports.postLike = async (req, res, next) => {
+    const postId = req.params.id;
+    try {
+        const existingPost = await Post.findOne({ where: { id: postId } });
+        existingPost.addLiker(req.user.id);
+        res.send();
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};
+
+module.exports.deleteLike = async (req, res, next) => {
+    const postId = req.params.id;
+    try {
+        const existingPost = await Post.findOne({ where: { id: postId } });
+        existingPost.removeLiker(req.user.id);
+        res.send();
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};

@@ -29,6 +29,11 @@ block content
                     else if user && user.id !== twit.user.id && follow
                         button.twit-unfollow UnFollow
                     .twit-content= twit.content
+                    -const like = user && twit && twit.Liker.map(l => l.id).includes(user.id)
+                    if user && !like
+                        button.like Like
+                    else if user && like
+                        button.unlike UnLike
                     if twit.img
                         .twit-img
                             img(src=twit.img alt='Thumbnail')
@@ -122,7 +127,43 @@ block content
                             xhr.send();
                         }
                     }
-                   
+
+                }
+            });
+        });
+        document.querySelectorAll('.like').forEach(function (tag) {
+            tag.addEventListener('click', function () {
+                var isLoggedIn = document.querySelector('#my-id');
+                var twitId = tag.parentNode.querySelector('.twit-id').value;
+                if (isLoggedIn) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            location.reload();
+                        } else {
+                            console.error(xhr.responseText);
+                        }
+                    };
+                    xhr.open('POST', '/post/' + twitId + '/like');
+                    xhr.send();
+                }
+            });
+        });
+        document.querySelectorAll('.unlike').forEach(function (tag) {
+            tag.addEventListener('click', function () {
+                var isLoggedIn = document.querySelector('#my-id');
+                var twitId = tag.parentNode.querySelector('.twit-id').value;
+                if (isLoggedIn) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            location.reload();
+                        } else {
+                            console.error(xhr.responseText);
+                        }
+                    };
+                    xhr.open('DELETE', '/post/' + twitId + '/like');
+                    xhr.send();
                 }
             });
         });

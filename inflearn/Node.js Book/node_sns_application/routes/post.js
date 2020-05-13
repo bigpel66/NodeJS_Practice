@@ -28,6 +28,10 @@ router.post(
 
 router.delete('/:id', isLoggedIn, postController.deleteText);
 
+router
+    .post('/:id/like', isLoggedIn, postController.postLike)
+    .delete('/:id/like', isLoggedIn, postController.deleteLike);
+
 router.get('/hashtag', postController.getHashtags);
 
 module.exports = router;
