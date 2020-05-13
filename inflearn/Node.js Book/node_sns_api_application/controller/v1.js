@@ -49,3 +49,7 @@ module.exports.postToken = async (req, res, next) => {
         });
     }
 };
+
+module.exports.getTest = async (req, res, next) => {
+    res.json(req.decoded);
+};

@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
+const morgan = require('morgan');
 const indexRouter = require('./routes/index');
 
 const app = express();
