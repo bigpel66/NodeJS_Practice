@@ -1,4 +1,4 @@
-const uuidv4 = require('uuid/dist/v4');
+const { uuid } = require('uuidv4');
 const { User, Domain } = require('../models/index');
 
 module.exports.getMain = async (req, res, next) => {
@@ -25,7 +25,7 @@ module.exports.postDomain = async (req, res, next) => {
             userId: req.user.id,
             host: req.body.host,
             type: req.body.type,
-            clientSecret: uuidv4(),
+            clientSecret: uuid(),
         });
 
         res.redirect('/');

@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
             underscored: false,
             validate: {
                 unknownType() {
-                    if (this.type === 'free' && this.type !== 'preminum') {
+                    if (this.type !== 'free' && this.type !== 'preminum') {
                         throw new Error(
                             `Type Column should be 'free' or 'premium'`
                         );
