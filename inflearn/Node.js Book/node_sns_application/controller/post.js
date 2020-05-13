@@ -78,6 +78,7 @@ module.exports.postText = async (req, res, next) => {
 module.exports.getHashtags = async (req, res, next) => {
     const query = req.query.hashtag;
 
+    console.log(query);
     if (!query) {
         return res.redirect('/');
     }
@@ -90,7 +91,16 @@ module.exports.getHashtags = async (req, res, next) => {
         let posts = [];
 
         if (hashtag) {
-            posts = await hashtag.getPosts({ include: [{ model: User }] });
+            posts = await hashtag.getPosts({
+                include: [
+                    { model: User },
+                    {
+                        model: User,
+                        attributes: ['id', 'nickname'],
+                        as: 'Liker',
+                    },
+                ],
+            });
         }
 
         return res.render('main', {

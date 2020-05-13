@@ -32,7 +32,7 @@ module.exports.postToken = async (req, res, next) => {
             },
             process.env.JWT_SECRET,
             {
-                expiresIn: '5min',
+                expiresIn: '5m',
                 issuer: 'nodebird',
             }
         );
@@ -52,4 +52,43 @@ module.exports.postToken = async (req, res, next) => {
 
 module.exports.getTest = async (req, res, next) => {
     res.json(req.decoded);
+};
+
+module.exports.getClientPosts = async (req, res, next) => {
+    try {
+        const posts = await Post.findAll({ where: { userId: req.decoded.id } });
+
+        res.json({
+            code: 200,
+            payload: posts,
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ code: 500, message: 'Server Error' });
+    }
+};
+
+module.exports.getHashtagPosts = async (req, res, next) => {
+    try {
+        const hashtag = await Hashtag.findOne({
+            where: { title: req.params.title },
+        });
+
+        if (!hashtag) {
+            return res.status(404).json({
+                code: 404,
+                message: 'No Hashtag Found',
+            });
+        }
+
+        const hashtaggedPosts = await hashtag.getPosts();
+
+        return res.json({
+            code: 200,
+            payload: hashtaggedPosts,
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ code: 500, message: 'Server Error' });
+    }
 };

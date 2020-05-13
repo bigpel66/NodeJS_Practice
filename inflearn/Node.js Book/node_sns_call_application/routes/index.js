@@ -5,4 +5,8 @@ const router = express.Router();
 
 router.get('/', indexController.getTest);
 
+router.get('/clientposts', indexController.getClientPosts);
+
+router.get('/hashtagposts/:hashtag', indexController.getHashtagPosts);
+
 module.exports = router;
