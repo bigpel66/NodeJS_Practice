@@ -1,7 +1,7 @@
 const fs = require('fs');
 const express = require('express');
 const postController = require('../controller/post');
-const { isLoggedIn, isNotLoggedIn } = require('../controller/middlewares');
+const { isLoggedIn } = require('../controller/middlewares');
 
 const router = express.Router();
 

@@ -21,6 +21,7 @@ module.exports.getMain = async (req, res, next) => {
                     attributes: ['id', 'nickname'],
                 },
             ],
+            order: [['createdAt', 'DESC']],
         });
 
         res.render('main', {
