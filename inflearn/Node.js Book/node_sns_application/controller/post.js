@@ -1,6 +1,6 @@
 const path = require('path');
 const multer = require('multer');
-const { Post, Hashtag } = require('../models/index');
+const { Post, Hashtag, User } = require('../models/index');
 
 const storage = multer.diskStorage({
     destination(req, file, cb) {
@@ -69,6 +69,35 @@ module.exports.postText = async (req, res, next) => {
         }
 
         res.redirect('/');
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};
+
+module.exports.getHashtags = async (req, res, next) => {
+    const query = req.query.hashtag;
+
+    if (!query) {
+        return res.redirect('/');
+    }
+
+    try {
+        const hashtag = await Hashtag.findOne({
+            where: { title: query.toLowerCase() },
+        });
+
+        let posts = [];
+
+        if (hashtag) {
+            posts = await hashtag.getPosts({ include: [{ model: User }] });
+        }
+
+        return res.render('main', {
+            title: `${query} | NodeBird`,
+            twits: posts,
+            user: req.user,
+        });
     } catch (err) {
         console.error(err);
         next(err);

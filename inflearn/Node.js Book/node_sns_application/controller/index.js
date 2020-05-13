@@ -15,10 +15,12 @@ module.exports.getJoin = (req, res, next) => {
 module.exports.getMain = async (req, res, next) => {
     try {
         const posts = await Post.findAll({
-            include: {
-                model: User,
-                attributes: ['id', 'nickname'],
-            },
+            include: [
+                {
+                    model: User,
+                    attributes: ['id', 'nickname'],
+                },
+            ],
         });
 
         res.render('main', {

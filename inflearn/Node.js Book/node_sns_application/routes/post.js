@@ -26,4 +26,6 @@ router.post(
     postController.postText
 );
 
+router.get('/hashtag', postController.getHashtags);
+
 module.exports = router;
