@@ -10,6 +10,7 @@ const { sequelize } = require('./models/index');
 
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
+const v1Router = require('./routes/v1');
 
 require('dotenv').config();
 sequelize.sync();
@@ -43,6 +44,7 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use('/v1', v1Router);
 app.use('/auth', authRouter);
 app.use('/', indexRouter);
 
