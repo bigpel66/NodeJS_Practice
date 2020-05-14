@@ -1,38 +1,18 @@
-const axios = require('axios');
 const request = require('../helpers/request');
+
+module.exports.getMain = (req, res, next) => {
+    res.render('main', {
+        key: process.env.CLIENT_SECRET,
+    });
+};
 
 module.exports.getTest = async (req, res, next) => {
     try {
-        if (!req.session.jwt) {
-            const tokenResult = await axios.post(
-                `http://localhost:8081/${process.env.API_VERSION}/token`,
-                {
-                    clientSecret: process.env.CLIENT_SECRET,
-                }
-            );
+        const result = await request(req, 'test');
 
-            if (tokenResult.data && tokenResult.data.code === 200) {
-                req.session.jwt = tokenResult.data.token;
-            } else {
-                return res.json(tokenResult.data);
-            }
-        }
-
-        const result = await axios.get(
-            `http://localhost:8081/${process.env.API_VERSION}/test`,
-            {
-                headers: {
-                    Authorization: req.session.jwt,
-                },
-            }
-        );
-
-        return res.json(result.data);
+        res.json(result.data);
     } catch (err) {
         console.error(err);
-        if (err.response.status === 419) {
-            return res.json(err.response.data);
-        }
         next(err);
     }
 };
