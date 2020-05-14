@@ -1,8 +1,10 @@
 const express = require('express');
 const v1Controller = require('../controller/v1');
-const { verifyToken } = require('../controller/middlewares');
+const { verifyToken, deprecated } = require('../controller/middlewares');
 
 const router = express.Router();
+
+router.use(deprecated);
 
 router.post('/token', v1Controller.postToken);
 

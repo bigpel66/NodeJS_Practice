@@ -5,7 +5,7 @@ module.exports.getTest = async (req, res, next) => {
     try {
         if (!req.session.jwt) {
             const tokenResult = await axios.post(
-                'http://localhost:8081/v1/token',
+                `http://localhost:8081/${process.env.API_VERSION}/token`,
                 {
                     clientSecret: process.env.CLIENT_SECRET,
                 }
@@ -18,11 +18,14 @@ module.exports.getTest = async (req, res, next) => {
             }
         }
 
-        const result = await axios.get('http://localhost:8081/v1/test', {
-            headers: {
-                Authorization: req.session.jwt,
-            },
-        });
+        const result = await axios.get(
+            `http://localhost:8081/${process.env.API_VERSION}/test`,
+            {
+                headers: {
+                    Authorization: req.session.jwt,
+                },
+            }
+        );
 
         return res.json(result.data);
     } catch (err) {

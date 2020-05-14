@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const RateLimit = require('express-rate-limit');
 
 module.exports.isLoggedIn = (req, res, next) => {
     if (req.isAuthenticated()) {
@@ -36,4 +37,23 @@ module.exports.verifyToken = (req, res, next) => {
             message: 'Invalid Token',
         });
     }
+};
+
+module.exports.apiLimiter = new RateLimit({
+    windowMs: 60 * 1000,
+    max: 10,
+    delayMs: 0,
+    handler(req, res) {
+        return res.status(this.statusCode).json({
+            code: this.statusCode,
+            message: 'Once Per a Minute',
+        });
+    },
+});
+
+module.exports.deprecated = (req, res, next) => {
+    res.status(410).json({
+        code: 410,
+        message: 'Version Deprecated\nUse New Version',
+    });
 };
