@@ -2,7 +2,11 @@ module.exports = (sequelize, DataTypes) => {
     return sequelize.define(
         'domain',
         {
-            host: { type: DataTypes.STRING(80), allowNull: false },
+            host: {
+                type: DataTypes.STRING(80),
+                allowNull: false,
+                unique: true,
+            },
             type: { type: DataTypes.STRING(10), allowNull: false },
             clientSecret: { type: DataTypes.STRING(40), allowNull: false },
             serverSecret: { type: DataTypes.STRING(40), allowNull: false },
