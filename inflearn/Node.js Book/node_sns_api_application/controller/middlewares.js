@@ -39,14 +39,26 @@ module.exports.verifyToken = (req, res, next) => {
     }
 };
 
-module.exports.apiLimiter = new RateLimit({
+module.exports.freeAPILimiter = new RateLimit({
     windowMs: 60 * 1000,
     max: 10,
     delayMs: 0,
     handler(req, res) {
         return res.status(this.statusCode).json({
             code: this.statusCode,
-            message: 'Once Per a Minute',
+            message: 'Free Plan: Ten Per Minute',
+        });
+    },
+});
+
+module.exports.premiumAPILimiter = new RateLimit({
+    windowMs: 60 * 1000,
+    max: 100,
+    delayMs: 0,
+    handler(req, res) {
+        return res.status(this.statusCode).json({
+            code: this.statusCode,
+            message: 'Premium Plan: a Hundred Per Minute',
         });
     },
 });

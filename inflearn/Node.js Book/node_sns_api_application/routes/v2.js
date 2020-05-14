@@ -2,7 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const url = require('url');
 const v2Controller = require('../controller/v2');
-const { verifyToken, apiLimiter } = require('../controller/middlewares');
+const {
+    verifyToken,
+    freeAPILimiter,
+    premiumAPILimiter,
+} = require('../controller/middlewares');
 const { Domain } = require('../models/index');
 
 const router = express.Router();
@@ -13,7 +17,9 @@ const router = express.Router();
 // AUTOMATIC SETTING OF CORS
 router.use(async (req, res, next) => {
     const domain = await Domain.findAll({
-        where: { host: `http://${url.parse(req.get('origin')).host}` },
+        where: {
+            host: `http://${url.parse(req.get('origin')).host}`,
+        },
     });
 
     if (domain) {
@@ -23,24 +29,28 @@ router.use(async (req, res, next) => {
     }
 });
 
-router.post('/token', apiLimiter, v2Controller.postToken);
+router.use(async (req, res, next) => {
+    const domain = await Domain.findAll({
+        where: {
+            host: `http://${url.parse(req.get('origin')).host}`,
+        },
+    });
 
-router.get('/test', apiLimiter, verifyToken, v2Controller.getTest);
+    if (domain[0].type === 'premium') {
+        premiumAPILimiter(req, res, next);
+    } else {
+        freeAPILimiter(req, res, next);
+    }
+});
 
-router.get(
-    '/client/posts',
-    apiLimiter,
-    verifyToken,
-    v2Controller.getClientPosts
-);
+router.post('/token', v2Controller.postToken);
 
-router.get(
-    '/hashtag/:title/posts',
-    apiLimiter,
-    verifyToken,
-    v2Controller.getHashtagPosts
-);
+router.get('/test', verifyToken, v2Controller.getTest);
 
-router.get('/follow', apiLimiter, verifyToken, v2Controller.getFollow);
+router.get('/client/posts', verifyToken, v2Controller.getClientPosts);
+
+router.get('/hashtag/:title/posts', verifyToken, v2Controller.getHashtagPosts);
+
+router.get('/follow', verifyToken, v2Controller.getFollow);
 
 module.exports = router;
