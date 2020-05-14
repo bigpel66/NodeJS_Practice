@@ -58,3 +58,14 @@ module.exports.getHashtagPosts = async (req, res, next) => {
         next(err);
     }
 };
+
+module.exports.getFollowList = async (req, res, next) => {
+    try {
+        const result = await request(req, 'follow');
+
+        res.json(result.data);
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};

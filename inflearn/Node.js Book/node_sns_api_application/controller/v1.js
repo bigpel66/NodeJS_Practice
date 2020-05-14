@@ -92,3 +92,33 @@ module.exports.getHashtagPosts = async (req, res, next) => {
         return res.status(500).json({ code: 500, message: 'Server Error' });
     }
 };
+
+module.exports.getFollow = async (req, res, next) => {
+    try {
+        const existingUser = await User.findOne({
+            where: { id: req.decoded.id },
+        });
+
+        const followers = await existingUser.getFollowers({
+            attributes: ['id', 'nickname'],
+        });
+        const followings = await existingUser.getFollowings({
+            attributes: ['id', 'nickname'],
+        });
+
+        console.log(followers);
+        console.log(followings);
+
+        return res.json({
+            code: 200,
+            followers,
+            followings,
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            code: 500,
+            message: 'Server Error',
+        });
+    }
+};

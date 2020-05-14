@@ -11,4 +11,7 @@ router.get('/test', verifyToken, v1Controller.getTest);
 router.get('/client/posts', verifyToken, v1Controller.getClientPosts);
 
 router.get('/hashtag/:title/posts', verifyToken, v1Controller.getHashtagPosts);
+
+router.get('/follow', verifyToken, v1Controller.getFollow);
+
 module.exports = router;
