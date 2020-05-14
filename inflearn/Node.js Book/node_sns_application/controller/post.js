@@ -116,9 +116,8 @@ module.exports.getHashtags = async (req, res, next) => {
 
 module.exports.deleteText = async (req, res, next) => {
     const postId = req.params.id;
-    console.log(postId);
+
     try {
-        console.log(1);
         await Post.destroy({ where: { id: postId, userId: req.user.id } });
 
         res.send();

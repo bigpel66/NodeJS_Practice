@@ -1,19 +1,28 @@
 const express = require('express');
-const axios = require('axios');
 const indexController = require('../controller/index');
 
 const router = express.Router();
 
-axios.defaults.headers.origin = process.env.ORIGIN_URL
-
 router.get('/', indexController.getMain);
 
-router.get('/test', indexController.getTest);
+router.get('/test', indexController.setHeader, indexController.getTest);
 
-router.get('/clientposts', indexController.getClientPosts);
+router.get(
+    '/clientposts',
+    indexController.setHeader,
+    indexController.getClientPosts
+);
 
-router.get('/hashtagposts/:hashtag', indexController.getHashtagPosts);
+router.get(
+    '/hashtagposts/:hashtag',
+    indexController.setHeader,
+    indexController.getHashtagPosts
+);
 
-router.get('/followlist', indexController.getFollowList);
+router.get(
+    '/followlist',
+    indexController.setHeader,
+    indexController.getFollowList
+);
 
 module.exports = router;

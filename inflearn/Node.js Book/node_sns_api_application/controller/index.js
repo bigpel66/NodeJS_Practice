@@ -8,7 +8,7 @@ module.exports.getMain = async (req, res, next) => {
             include: [{ model: Domain }],
         });
 
-        res.render('login', {
+        return res.render('login', {
             user: existingUser,
             loginError: req.flash('loginError'),
             domains: existingUser && existingUser.domains,
@@ -26,6 +26,7 @@ module.exports.postDomain = async (req, res, next) => {
             host: req.body.host,
             type: req.body.type,
             clientSecret: uuid(),
+            serverSecret: uuid(),
         });
 
         res.redirect('/');

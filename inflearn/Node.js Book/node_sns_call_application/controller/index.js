@@ -1,3 +1,4 @@
+const axios = require('axios');
 const request = require('../helpers/request');
 
 module.exports.getMain = (req, res, next) => {
@@ -51,4 +52,10 @@ module.exports.getFollowList = async (req, res, next) => {
         console.error(err);
         next(err);
     }
+};
+
+// NOT FOR THE FRONT REQUEST, ONLY FOR THE BACKEND REQUEST
+module.exports.setHeader = (req, res, next) => {
+    axios.defaults.headers.origin = process.env.ORIGIN_URL;
+    next();
 };

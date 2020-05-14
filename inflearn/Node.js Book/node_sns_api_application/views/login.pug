@@ -30,11 +30,13 @@ html
                     th Domain Address
                     th Type
                     th Client Secret
+                    th Server Secret
                 for domain in user.domains
                     tr
                         td= domain.host
                         td= domain.type
                         td= domain.clientSecret
+                        td= domain.serverSecret
 
         else
             form#login-form(action='/auth/login' method='post')

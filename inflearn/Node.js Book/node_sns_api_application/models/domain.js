@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
             host: { type: DataTypes.STRING(80), allowNull: false },
             type: { type: DataTypes.STRING(10), allowNull: false },
             clientSecret: { type: DataTypes.STRING(40), allowNull: false },
+            serverSecret: { type: DataTypes.STRING(40), allowNull: false },
         },
         {
             timestamps: true,
@@ -12,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
             underscored: false,
             validate: {
                 unknownType() {
-                    if (this.type !== 'free' && this.type !== 'preminum') {
+                    if (this.type !== 'free' && this.type !== 'premium') {
                         throw new Error(
                             `Type Column should be 'free' or 'premium'`
                         );

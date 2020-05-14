@@ -2,20 +2,39 @@ const jwt = require('jsonwebtoken');
 const { Domain, User, Post, Hashtag } = require('../models/index');
 
 module.exports.postToken = async (req, res, next) => {
+    const { serverSecret } = req.body;
     const { clientSecret } = req.body;
 
     try {
-        const domain = await Domain.findOne({
-            where: {
-                clientSecret,
-            },
-            include: [
-                {
-                    model: User,
-                    attributes: ['id', 'nickname'],
+        let domain;
+
+        if (serverSecret) {
+            domain = await Domain.findOne({
+                where: {
+                    serverSecret,
                 },
-            ],
-        });
+                include: [
+                    {
+                        model: User,
+                        attributes: ['id', 'nickname'],
+                    },
+                ],
+            });
+        }
+
+        if (clientSecret) {
+            domain = await Domain.findOne({
+                where: {
+                    clientSecret,
+                },
+                include: [
+                    {
+                        model: User,
+                        attributes: ['id', 'nickname'],
+                    },
+                ],
+            });
+        }
 
         if (!domain) {
             return res.status(401).json({
