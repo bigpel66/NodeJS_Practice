@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    div Press 'F12' to check console and network tabs
+    script.
+        var webSocket = new WebSocket("ws://localhost:8080");
+        webSocket.onopen = function () {
+            console.log('Server connected to the WebSocket');
+        }
+        webSocket.onmessage = function (event) {
+            console.log(event.data);
+            webSocket.send('Messaging client to server');
+        }
