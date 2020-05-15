@@ -4,6 +4,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const flash = require('connect-flash');
+const mongoose = require('mongoose');
 
 const webSocket = require('./socket');
 const indexRouter = require('./routes/index');
@@ -53,4 +54,27 @@ const server = app.listen(app.get('port'), () => {
     console.log(`Server Running on ${app.get('port')}!`);
 });
 
-webSocket(server);
+const connect = async () => {
+    try {
+        mongoose.set('debug', false);
+
+        await mongoose.connect(process.env.MONGO_URL);
+
+        mongoose.connection.on('error', (err) => {
+            console.error('MONGO DB ERROR', err);
+        });
+        mongoose.connection.on('disconnected', () => {
+            console.error('MONGO DB DISCONNECTED\nRETRYING TO CONNECT');
+            connect();
+        });
+
+        require('./schemas/room');
+        require('./schemas/chat');
+
+        webSocket(server);
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+connect();
