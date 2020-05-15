@@ -2,12 +2,24 @@ extends layout
 
 block content
     div Press 'F12' to check console and network tabs
+    script(src='/socket.io/socket.io.js')
     script.
-        var webSocket = new WebSocket("ws://localhost:8080");
-        webSocket.onopen = function () {
-            console.log('Server connected to the WebSocket');
-        }
-        webSocket.onmessage = function (event) {
-            console.log(event.data);
-            webSocket.send('Messaging client to server');
-        }
+        // WS PACKAGE
+        //- var webSocket = new WebSocket("ws://localhost:8080");
+        //- webSocket.onopen = function () {
+        //-     console.log('Server connected to the WebSocket');
+        //- }
+        //- webSocket.onmessage = function (event) {
+        //-     console.log(event.data);
+        //-     webSocket.send('Messaging client to server');
+        //- }
+        var socket = io.connect('http://localhost:8080', {
+            path: '/socket.io',
+            transports: ['websocket']
+        });
+
+        socket.on('news', function(data) {
+            console.log(data);
+            socket.emit('data', 'Client to Server1');
+            socket.emit('reply', 'Client to Server2');
+        })
