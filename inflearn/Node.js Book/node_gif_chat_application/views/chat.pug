@@ -4,6 +4,9 @@ block content
     h1= title
     a#exit-btn(href='/') Leave Channel
     #number= 'Current User: ' + number
+    #owner
+        | Owner: 
+        span#room-owner(style='color:' + room.owner)= room.owner
     fieldset
         legend Chats
         #chat-list
@@ -71,16 +74,25 @@ block content
             }
             var name = document.createElement('div');
             name.textContent = data.user;
+            name.className = 'chat-user';
             if(data.user !== '#{user}') {
                 var dm = document.createElement('button');
                 dm.textContent = 'Direct Message'
                 dm.className = 'dm';
                 dm.dataset.socket = data.socket;
                 dm.addEventListener('click', sendDM);
-                name.append(dm);
+                name.appendChild(dm);
             }
-            //- name.dataset.socket = data.socket;
-            //- name.addEventListener('click', ban);
+
+            if(data.user !== '#{room.owner}' && data.user !== '#{user}') {            
+                var banButton = document.createElement('button');
+                banButton.className = 'ban';
+                banButton.textContent = 'Exile';
+                banButton.dataset.socket = data.socket;
+                banButton.addEventListener('click', ban);
+                name.appendChild(banButton);
+            }
+           
             div.appendChild(name);
             if(data.chat) {
                 var chat = document.createElement('div');
@@ -135,4 +147,22 @@ block content
         }
         socket.on('dm', function (data) {
             alert(data.from + ' sent DM\n' + data.msg);
+        })
+        Array.prototype.forEach.call(document.querySelectorAll('.ban'), function (el) {
+            el.addEventListener('click', ban);
+        })
+        var ban = function (e) {
+            var id = e.target.dataset.socket;
+            var name = e.target.textContent;
+            var owner = document.getElementById('room-owner').textContent;
+            console.log('#{user}', owner);
+            if('#{user}' === owner && name !== owner) {
+                if(confirm(`Would you like to exile ${name}?`)) {
+                    socket.emit('ban', {id});
+                }
+            }
+        }
+        socket.on('ban', function () {
+            alert('Exiled!');
+            location.href = '/';
         })
