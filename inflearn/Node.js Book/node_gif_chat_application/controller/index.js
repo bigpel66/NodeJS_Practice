@@ -114,7 +114,15 @@ module.exports.postChat = async (req, res, next) => {
 
         const io = req.app.get('io');
 
-        io.of('/chat').to(req.params.id).emit('chat', chat);
+        // WITHOUT DM
+        // io.of('/chat').to(req.params.id).emit('chat', chat);
+
+        io.of('/chat').to(req.params.id).emit('chat', {
+            socket: req.body.sid,
+            room: req.params.id,
+            user: req.session.color,
+            chat: req.body.chat,
+        });
 
         res.send('Chat Sent');
     } catch (err) {
@@ -135,7 +143,15 @@ module.exports.postGIF = async (req, res, next) => {
 
         const io = req.app.get('io');
 
-        io.of('/chat').to(req.params.id).emit('chat', chat);
+        // WITHOUT DM
+        // io.of('/chat').to(req.params.id).emit('chat', chat);
+
+        io.of('/chat').to(req.params.id).emit('chat', {
+            socket: req.body.sid,
+            room: req.params.id,
+            user: req.session.color,
+            gif: req.file.filename,
+        });
 
         res.send('GIF Sent');
     } catch (err) {
