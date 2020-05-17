@@ -1,0 +1,19 @@
+extends layout
+
+block content
+    .timeline
+        h2 Auction List
+        table#good-list
+            tr
+                th Good
+                th Image
+                th Start Price
+                th End Time
+                th Enter
+            for good in goods
+                tr
+                    td= good.name
+                    td: img(src='/img/' + good.imageUrl)
+                    td= good.price
+                    td.time(data-start=good.createdAt) 00:00:00
+                    td: a.enter.btn(href='/good/' + good.id) Enter

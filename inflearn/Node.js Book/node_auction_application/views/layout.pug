@@ -1,0 +1,35 @@
+doctype
+html
+    head
+        meta(charset='UTF-8')
+        title= title
+        meta(name='viewport' content='width=device-width, user-scalable=no')
+        meta(http-equiv='X-UA-Compatible' content='IE=edge')
+        link(rel='stylesheet' href='/main.css')
+    body
+        .container
+            .profile-wrap
+                .profile
+                    if user && user.id
+                        .user-name= 'Hello, ' + user.nickname
+                        .user-money= 'Total Credits: ' + user.money
+                        input#my-id(type='hidden' value=user.id)
+                        a#logout.btn(href='/auth/logout') Logout
+                        a#register.btn(href='/good') Register Good
+                    else
+                        form#login-form(action='/auth/login' method='post')
+                            .input-group
+                                label(for='email') Email
+                                input#email(type='email' name='email' required autofocus)
+                            .input-group
+                                label(for='password') Password
+                                input#password(type='password' name='password' required)
+                            if loginError
+                                .error-message= loginError
+                            a#join.btn(href='/join') Join
+                            button#login.btn(type='submit') Login
+                footer
+                    | Original From&nbsp;
+                    a(href='https://www.zerocho.com' target='_blank') ZeroCho
+                block good
+            block content

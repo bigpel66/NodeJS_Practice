@@ -25,10 +25,12 @@ db.Auction.belongsTo(db.User);
 db.Good.hasMany(db.Auction);
 db.Auction.belongsTo(db.Good);
 
-db.User.hasMany(db.Good);
+// MAKES DUPLICATE USERID FIELD
+// db.User.hasMany(db.Good);
 db.Good.belongsTo(db.User, { as: 'owner' });
 
-db.User.hasMany(db.Good);
+// MAKES DUPLICATE USERID FIELD
+// db.User.hasMany(db.Good);
 db.Good.belongsTo(db.User, { as: 'bidder' });
 
 module.exports = db;

@@ -5,11 +5,14 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const flash = require('connect-flash');
+const passport = require('passport');
+const passportConfig = require('./passport/index');
 require('dotenv').config();
 
 const { sequelize } = require('./models/index');
 const webSocket = require('./socket');
 const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth');
 
 const app = express();
 
@@ -29,6 +32,7 @@ const sessionMiddleware = session({
 });
 
 sequelize.sync();
+passportConfig(passport);
 
 app.set('port', process.env.PORT || 8080);
 app.set('views', path.join(__dirname, 'views'));
@@ -40,8 +44,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(sessionMiddleware);
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(flash());
 
+app.use('/auth', authRouter);
 app.use('/', indexRouter);
 
 app.use((req, res, next) => {
