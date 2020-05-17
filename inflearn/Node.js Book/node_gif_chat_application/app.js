@@ -5,35 +5,43 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const flash = require('connect-flash');
 const mongoose = require('mongoose');
+const ColorHash = require('color-hash');
 
 const webSocket = require('./socket');
 const indexRouter = require('./routes/index');
 
-const app = express();
-
 require('dotenv').config();
+
+const app = express();
+const sessionMiddleware = session({
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.COOKIE_SECRET,
+    cookie: {
+        httpOnly: true,
+        secure: false,
+    },
+});
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.set('port', process.env.PORT || 8080);
 
 app.use(morgan('dev'));
+app.use('/gif', express.static(path.join(__dirname, 'uploads')));
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(
-    session({
-        resave: false,
-        saveUninitialized: false,
-        secret: process.env.COOKIE_SECRET,
-        cookie: {
-            httpOnly: true,
-            secure: false,
-        },
-    })
-);
+app.use(sessionMiddleware);
 app.use(flash());
+app.use((req, res, next) => {
+    if (!req.session.color) {
+        const colorHash = new ColorHash();
+        req.session.color = colorHash.hex(req.sessionID);
+    }
+    next();
+});
 
 app.use('/', indexRouter);
 
@@ -71,7 +79,7 @@ const connect = async () => {
         require('./schemas/room');
         require('./schemas/chat');
 
-        webSocket(server);
+        webSocket(server, app, sessionMiddleware);
     } catch (err) {
         console.error(err);
     }
