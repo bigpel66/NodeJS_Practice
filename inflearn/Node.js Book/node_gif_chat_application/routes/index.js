@@ -54,4 +54,6 @@ router.post('/room/:id/chat', indexController.postChat);
 
 router.post('/room/:id/gif', upload.single('gif'), indexController.postGIF);
 
+router.post('/room/:id/system', indexController.postSystem);
+
 module.exports = router;

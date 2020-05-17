@@ -68,6 +68,8 @@
 
 const axios = require('axios');
 const SocketIO = require('socket.io');
+const cookieParser = require('cookie-parser');
+const cookie = require('cookie-signature');
 
 module.exports = (server, app, sessionMiddleware) => {
     const io = SocketIO(server, { path: '/socket.io' });
@@ -76,6 +78,14 @@ module.exports = (server, app, sessionMiddleware) => {
 
     const room = io.of('/room');
     const chat = io.of('/chat');
+
+    io.use((socket, next) => {
+        cookieParser(process.env.COOKIE_SECRET)(
+            socket.request,
+            socket.request.res,
+            next
+        );
+    });
 
     io.use((socket, next) => {
         sessionMiddleware(socket.request, socket.request.res, next);
@@ -88,7 +98,7 @@ module.exports = (server, app, sessionMiddleware) => {
         });
     });
 
-    chat.on('connection', (socket) => {
+    chat.on('connection', async (socket) => {
         console.log(`Access Namespace 'chat'`);
 
         const req = socket.request;
@@ -100,11 +110,29 @@ module.exports = (server, app, sessionMiddleware) => {
             [referer.split('/').length - 1].replace(/\?.+/, '');
 
         socket.join(roomId);
-        socket.to(roomId).emit('join', {
-            user: 'system',
-            chat: `${req.session.color} has entered.`,
-            number: socket.adapter.rooms[roomId].length,
-        });
+
+        await axios.post(
+            `http://localhost:8080/room/${roomId}/system`,
+            {
+                type: 'join',
+            },
+            {
+                headers: {
+                    Cookie: `connect.sid=${
+                        's%3A' +
+                        cookie.sign(
+                            req.signedCookies['connect.sid'],
+                            process.env.COOKIE_SECRET
+                        )
+                    }`,
+                },
+            }
+        );
+        // socket.to(roomId).emit('join', {
+        //     user: 'system',
+        //     chat: `${req.session.color} has entered.`,
+        //     number: socket.adapter.rooms[roomId].length,
+        // });
 
         socket.on('disconnect', async () => {
             console.log(`Leave Namespace 'chat'`);
@@ -121,11 +149,28 @@ module.exports = (server, app, sessionMiddleware) => {
                     console.error(err);
                 }
             } else {
-                socket.to(roomId).emit('exit', {
-                    user: 'system',
-                    chat: `${req.session.color} has left.`,
-                    number: socket.adapter.rooms[roomId].length,
-                });
+                await axios.post(
+                    `http://localhost:8080/room/${roomId}/system`,
+                    {
+                        type: 'exit',
+                    },
+                    {
+                        headers: {
+                            Cookie: `connect.sid=${
+                                's%3A' +
+                                cookie.sign(
+                                    req.signedCookies['connect.sid'],
+                                    process.env.COOKIE_SECRET
+                                )
+                            }`,
+                        },
+                    }
+                );
+                // socket.to(roomId).emit('exit', {
+                //     user: 'system',
+                //     chat: `${req.session.color} has left.`,
+                //     number: socket.adapter.rooms[roomId].length,
+                // });
             }
         });
     });

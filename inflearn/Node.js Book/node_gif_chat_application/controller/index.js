@@ -143,3 +143,35 @@ module.exports.postGIF = async (req, res, next) => {
         next(err);
     }
 };
+
+module.exports.postSystem = async (req, res, next) => {
+    try {
+        const chat =
+            req.body.type === 'join'
+                ? `${req.session.color} has entered.`
+                : `${req.session.color} has left.`;
+
+        const sysChat = new Chat({
+            room: req.params.id,
+            user: 'system',
+            chat,
+        });
+
+        await sysChat.save();
+
+        const io = req.app.get('io');
+
+        io.of('/chat')
+            .to(req.params.id)
+            .emit('sys', {
+                user: 'system',
+                chat,
+                number: io.of('/chat').adapter.rooms[req.params.id].length,
+            });
+
+        res.send('Sys Message Sent');
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};

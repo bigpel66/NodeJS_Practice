@@ -35,7 +35,7 @@ block content
         var socket = io.connect('http://localhost:8080/chat', {
             path: '/socket.io'
         });
-        socket.on('join', function (data) {
+        socket.on('sys', function (data) {
             document.querySelector('#number').textContent = 'Current User: ' + data.number;
             var div = document.createElement('div');
             div.classList.add('system');
@@ -44,15 +44,24 @@ block content
             div.appendChild(chat);
             document.querySelector('#chat-list').appendChild(div);
         });
-        socket.on('exit', function (data) {
-            document.querySelector('#number').textContent = 'Current User: ' + data.number;
-            var div = document.createElement('div');
-            div.classList.add('system');
-            var chat = document.createElement('div');
-            div.textContent = data.chat;
-            div.appendChild(chat);
-            document.querySelector('#chat-list').appendChild(div);
-        });
+        //- socket.on('join', function (data) {
+        //-     document.querySelector('#number').textContent = 'Current User: ' + data.number;
+        //-     var div = document.createElement('div');
+        //-     div.classList.add('system');
+        //-     var chat = document.createElement('div');
+        //-     div.textContent = data.chat;
+        //-     div.appendChild(chat);
+        //-     document.querySelector('#chat-list').appendChild(div);
+        //- });
+        //- socket.on('exit', function (data) {
+        //-     document.querySelector('#number').textContent = 'Current User: ' + data.number;
+        //-     var div = document.createElement('div');
+        //-     div.classList.add('system');
+        //-     var chat = document.createElement('div');
+        //-     div.textContent = data.chat;
+        //-     div.appendChild(chat);
+        //-     document.querySelector('#chat-list').appendChild(div);
+        //- });
         socket.on('chat', function (data) {
             var div = document.createElement('div')
             if(data.user === '#{user}') {
