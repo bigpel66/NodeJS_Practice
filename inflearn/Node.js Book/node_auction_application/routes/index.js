@@ -48,4 +48,8 @@ router
     .get('/good', isLoggedIn, indexController.getGood)
     .post('/good', isLoggedIn, upload.single('img'), indexController.postGood);
 
+router.get('/good/:id', isLoggedIn, indexController.getGoodDetail);
+
+router.post('/good/:id/bid', isLoggedIn, indexController.postGoodDetailBid);
+
 module.exports = router;

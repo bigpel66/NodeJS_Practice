@@ -10,7 +10,7 @@ module.exports = (server, app, sessionMiddleware) => {
     });
 
     io.on('connection', (socket) => {
-        const req = socket.req;
+        const req = socket.request;
         const {
             headers: { referer },
         } = req;

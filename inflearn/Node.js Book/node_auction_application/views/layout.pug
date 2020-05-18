@@ -14,6 +14,7 @@ html
                         .user-name= 'Hello, ' + user.nickname
                         .user-money= 'Total Credits: ' + user.money
                         input#my-id(type='hidden' value=user.id)
+                        a#home.btn(href='/') Home
                         a#logout.btn(href='/auth/logout') Logout
                         a#register.btn(href='/good') Register Good
                     else
