@@ -52,4 +52,6 @@ router.get('/good/:id', isLoggedIn, indexController.getGoodDetail);
 
 router.post('/good/:id/bid', isLoggedIn, indexController.postGoodDetailBid);
 
+router.get('/list', isLoggedIn, indexController.getList);
+
 module.exports = router;

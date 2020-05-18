@@ -12,6 +12,7 @@ require('dotenv').config();
 const { sequelize } = require('./models/index');
 const webSocket = require('./socket');
 const sse = require('./sse');
+const checkAuction = require('./check-auction');
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 
@@ -34,6 +35,7 @@ const sessionMiddleware = session({
 
 sequelize.sync();
 passportConfig(passport);
+checkAuction();
 
 app.set('port', process.env.PORT || 8080);
 app.set('views', path.join(__dirname, 'views'));

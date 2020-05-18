@@ -1,0 +1,15 @@
+extends layout
+
+block content
+    .timeline
+        h2 Succeed Bids
+        table#good-list
+            tr
+                th Good
+                th Image
+                th Bid
+            for good in goods
+                tr
+                    td= good.name
+                    td: img(src='/img/' + good.imageUrl)
+                    td= good.auctions[0].bid

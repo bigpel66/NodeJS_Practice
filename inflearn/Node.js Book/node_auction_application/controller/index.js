@@ -1,4 +1,5 @@
-const { Good, User, Auction } = require('../models/index');
+const schedule = require('node-schedule');
+const { Good, User, Auction, sequelize } = require('../models/index');
 
 module.exports.getUser = (req, res, next) => {
     res.locals.user = req.user;
@@ -36,11 +37,32 @@ module.exports.getGood = (req, res, next) => {
 module.exports.postGood = async (req, res, next) => {
     try {
         const { name, price } = req.body;
-        await Good.create({
+        const good = await Good.create({
             name,
             price,
             imageUrl: req.file.filename,
             ownerId: req.user.id,
+        });
+        const end = new Date();
+        
+        end.setDate(end.getDate() + 1);
+        schedule.scheduleJob(end, async () => {
+            const success = await Auction.findOne({
+                where: { goodId: good.id },
+                order: [['bid', 'DESC']],
+            });
+
+            await Good.update(
+                { bidderId: success.userId },
+                { where: { id: good.id } }
+            );
+
+            await User.update(
+                {
+                    money: sequelize.literal(`money - ${success.bid}`),
+                },
+                { where: { id: success.userId } }
+            );
         });
 
         res.redirect('/');
@@ -85,8 +107,8 @@ module.exports.postGoodDetailBid = async (req, res, next) => {
             order: [[{ model: Auction }, 'bid', 'DESC']],
         });
 
-        if(bid > req.user.money) {
-            return res.status(403).send('You are not afford to bid')
+        if (bid > req.user.money) {
+            return res.status(403).send('You are not afford to bid');
         }
 
         if (good.price > bid) {
@@ -122,6 +144,21 @@ module.exports.postGoodDetailBid = async (req, res, next) => {
         });
 
         return res.send('Made a Bid');
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};
+
+module.exports.getList = async (req, res, next) => {
+    try {
+        const goods = await Good.findAll({
+            where: { bidderId: req.user.id },
+            include: [{ model: Auction }],
+            order: [[{ model: Auction }, 'bid', 'DESC']],
+        });
+
+        res.render('list', { title: 'Succeed Bids - Node Auction', goods });
     } catch (err) {
         console.error(err);
         next(err);
