@@ -11,6 +11,7 @@ require('dotenv').config();
 
 const { sequelize } = require('./models/index');
 const webSocket = require('./socket');
+const sse = require('./sse');
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 
@@ -69,3 +70,4 @@ const server = app.listen(app.get('port'), () => {
 });
 
 webSocket(server, app, sessionMiddleware);
+sse(server);
