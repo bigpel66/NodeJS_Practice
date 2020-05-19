@@ -8,6 +8,8 @@ const flash = require('connect-flash');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+const indexRouter = require('./routes');
+
 const app = express();
 
 const accessStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {
@@ -35,6 +37,8 @@ app.use(
     })
 );
 app.use(flash());
+
+app.use('/', indexRouter);
 
 app.use((req, res, next) => {
     const err = new Error('Not Found');
