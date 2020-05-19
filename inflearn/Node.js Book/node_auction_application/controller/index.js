@@ -44,7 +44,7 @@ module.exports.postGood = async (req, res, next) => {
             ownerId: req.user.id,
         });
         const end = new Date();
-        
+
         end.setDate(end.getDate() + 1);
         schedule.scheduleJob(end, async () => {
             const success = await Auction.findOne({
@@ -106,6 +106,10 @@ module.exports.postGoodDetailBid = async (req, res, next) => {
             include: [{ model: Auction }],
             order: [[{ model: Auction }, 'bid', 'DESC']],
         });
+
+        if (good.ownerId === req.user.id) {
+            return res.status(403).send('Owner cannot bid');
+        }
 
         if (bid > req.user.money) {
             return res.status(403).send('You are not afford to bid');
