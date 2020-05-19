@@ -5,6 +5,10 @@ const { User } = require('../models/index');
 module.exports.postJoin = async (req, res, next) => {
     const { email, password, nickname, money } = req.body;
 
+    if (money > 999999999) {
+        req.flash('joinError', 'Too Much Money');
+        return res.redirect('/join');
+    }
     try {
         const existingUser = await User.findOne({ where: { email } });
 

@@ -10,6 +10,9 @@ block content
                 label(for='good-photo') Image
                 input#good-photo(type='file' name='img' required)
             .input-group
+                label(for='good-end') Timer Setting
+                input#good-end(type='number' name='end' required value=24)
+            .input-group
                 label(for='good-price') Start Price
                 input#good-price(type='number' name='price' required)
             button#join-btn.btn(type='submit') Register Good

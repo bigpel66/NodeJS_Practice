@@ -36,17 +36,18 @@ module.exports.getGood = (req, res, next) => {
 
 module.exports.postGood = async (req, res, next) => {
     try {
-        const { name, price } = req.body;
+        const { name, price, end } = req.body;
         const good = await Good.create({
             name,
             price,
+            end,
             imageUrl: req.file.filename,
             ownerId: req.user.id,
         });
-        const end = new Date();
+        const calcEnd = new Date();
 
-        end.setDate(end.getDate() + 1);
-        schedule.scheduleJob(end, async () => {
+        calcEnd.setHours(calcEnd.getHours() + end);
+        schedule.scheduleJob(calcEnd, async () => {
             const success = await Auction.findOne({
                 where: { goodId: good.id },
                 order: [['bid', 'DESC']],
