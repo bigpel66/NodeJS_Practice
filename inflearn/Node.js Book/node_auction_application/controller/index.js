@@ -53,17 +53,26 @@ module.exports.postGood = async (req, res, next) => {
                 order: [['bid', 'DESC']],
             });
 
-            await Good.update(
-                { bidderId: success.userId },
-                { where: { id: good.id } }
-            );
+            if (!success) {
+                await Good.update(
+                    {
+                        bidderId: good.ownerId,
+                    },
+                    { where: { id: good.id } }
+                );
+            } else {
+                await Good.update(
+                    { bidderId: success.userId },
+                    { where: { id: good.id } }
+                );
 
-            await User.update(
-                {
-                    money: sequelize.literal(`money - ${success.bid}`),
-                },
-                { where: { id: success.userId } }
-            );
+                await User.update(
+                    {
+                        money: sequelize.literal(`money - ${success.bid}`),
+                    },
+                    { where: { id: success.userId } }
+                );
+            }
         });
 
         res.redirect('/');

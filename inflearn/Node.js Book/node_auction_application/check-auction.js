@@ -19,25 +19,14 @@ module.exports = async () => {
                     order: [['bid', 'DESC']],
                 });
 
-                await Good.update(
-                    { bidderId: success.userId },
-                    { where: { id: target.id } }
-                );
-                await User.update(
-                    {
-                        money: sequelize.literal(`money - ${success.bid}`),
-                    },
-                    {
-                        where: { id: success.userId },
-                    }
-                );
-            } else {
-                schedule.scheduleJob(end, async () => {
-                    const success = await Auction.findOne({
-                        where: { goodId: target.id },
-                        order: [['bid', 'DESC']],
-                    });
-
+                if (!success) {
+                    await Good.update(
+                        {
+                            bidderId: target.ownerId,
+                        },
+                        { where: { id: target.id } }
+                    );
+                } else {
                     await Good.update(
                         { bidderId: success.userId },
                         { where: { id: target.id } }
@@ -46,8 +35,39 @@ module.exports = async () => {
                         {
                             money: sequelize.literal(`money - ${success.bid}`),
                         },
-                        { where: { id: success.userId } }
+                        {
+                            where: { id: success.userId },
+                        }
                     );
+                }
+            } else {
+                schedule.scheduleJob(end, async () => {
+                    const success = await Auction.findOne({
+                        where: { goodId: target.id },
+                        order: [['bid', 'DESC']],
+                    });
+
+                    if (!success) {
+                        await Good.update(
+                            {
+                                bidderId: target.ownerId,
+                            },
+                            { where: { id: target.id } }
+                        );
+                    } else {
+                        await Good.update(
+                            { bidderId: success.userId },
+                            { where: { id: target.id } }
+                        );
+                        await User.update(
+                            {
+                                money: sequelize.literal(
+                                    `money - ${success.bid}`
+                                ),
+                            },
+                            { where: { id: success.userId } }
+                        );
+                    }
                 });
             }
         });
