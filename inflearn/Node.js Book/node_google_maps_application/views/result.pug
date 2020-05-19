@@ -1,10 +1,15 @@
 extends layout
 
 block content
-    h1= query + ' Search Result(' + results.length + ')'
+    h1= 'Search Result of ' + query + ' (' + results.length + ' Found)'
     if results
+        -let counter = 0
         for result in results
-            div= result.formatted_address
-            div= JSON.stringify(result.geometry.location)
-            div= result.place_id
-            div= result.name
+            div= 'No. ' + ++counter
+            div= 'Address: ' + result.formatted_address
+            div= 'Lat & LONG: ' + JSON.stringify(result.geometry.location)
+            div= 'Place ID: ' + result.place_id
+            div= 'Place Name: ' + result.name
+            div= '---------------------------------------------------------------------'
+
+

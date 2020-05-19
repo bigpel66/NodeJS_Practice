@@ -28,7 +28,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
     session({
         resave: false,
-        saveuninitialized: false,
+        saveUninitialized: false,
         secret: process.env.COOKIE_SECRET,
         cookie: {
             httpOnly: true,
@@ -57,7 +57,11 @@ const connect = async () => {
     try {
         mongoose.set('debug', false);
 
-        await mongoose.connect(process.env.MONGO_URL);
+        await mongoose.connect(process.env.MONGO_URL, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+        });
 
         mongoose.connection.on('error', (err) => {
             console.error('MONGO DB ERROR', err);
