@@ -104,3 +104,17 @@ module.exports.deleteFavoriteLocation = async (req, res, next) => {
         next(err);
     }
 };
+
+// WORKING EVERYWHERE, BUT KOREA
+module.exports.getDirections = async (req, res, next) => {
+    try {
+        const { origin, destination } = req.query;
+        const directions = util.promisify(googleMapsClient.directions);
+        const response = await directions({ origin, destination });
+        console.log(response);
+        res.json(response);
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+};

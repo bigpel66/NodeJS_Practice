@@ -13,4 +13,5 @@ router
     .post('/location/:id/favorite', indexController.postFavoriteLocation)
     .delete('/location/:id/favorite', indexController.deleteFavoriteLocation);
 
+router.get('/directions', indexController.getDirections);
 module.exports = router;
