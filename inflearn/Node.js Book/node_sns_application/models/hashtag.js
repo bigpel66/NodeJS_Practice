@@ -8,6 +8,12 @@ module.exports = (sequelize, DataTypes) => {
                 unique: true,
             },
         },
-        { timestamps: true, paranoid: true, underscored: false }
+        {
+            timestamps: true,
+            paranoid: true,
+            underscored: false,
+            charset: 'utf8',
+            collate: 'utf8_general_ci'
+        }
     );
 };

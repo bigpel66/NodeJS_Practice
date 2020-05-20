@@ -5,6 +5,10 @@ const morgan = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
+const helmet = require('helmet');
+const hpp = require('hpp');
+const redis = require('redis');
+const RedisStore = require('connect-redis')(session);
 
 // GLOBAL MULTER
 // const multer = require('multer');
@@ -41,19 +45,69 @@ const userRouter = require('./routes/user');
 
 const { sequelize } = require('./models/index');
 const passportConfig = require('./passport/index');
+const logger = require('./logger');
+
+logger.info('logging');
+logger.error('error');
 
 require('dotenv').config();
 
 const app = express();
+
+const redisClient = redis.createClient(
+    process.env.REDIS_PORT,
+    process.env.REDIS_HOST
+);
+
+const redisConnectionResult = redisClient.auth(
+    process.env.REDIS_PASSWORD,
+    (err) => {
+        if (err) {
+            console.log(err);
+        }
+    }
+);
+
+console.log('redis connection with client: ', redisConnectionResult);
+
+const sessionOption = {
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.COOKIE_SECRET,
+    cookie: {
+        httpOnly: true,
+        secure: false,
+    },
+    store: new RedisStore({
+        client: redisClient,
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT,
+        pass: process.env.REDIS_PASSWORD,
+        logErrors: true,
+    }),
+};
+
+if (process.env.NODE_ENV === 'production') {
+    // ACTIVATE WHEN IT HAS TO BE USED
+    // sessionOption.proxy = true;
+    // sessionOption.cookie.secure = true;
+}
 
 sequelize.sync();
 passportConfig(passport);
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
-app.set('port', process.env.PORT);
+app.set('port', process.env.PORT || 8080);
 
-app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'production') {
+    app.use(morgan('combined'));
+    app.use(helmet());
+    app.use(hpp());
+} else {
+    app.use(morgan('dev'));
+}
+
 app.use('/img', express.static(path.join(__dirname, 'uploads')));
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -63,17 +117,7 @@ app.use(express.urlencoded({ extended: false }));
 // app.use(upload.single('img'));
 
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(
-    session({
-        resave: false,
-        saveUninitialized: false,
-        secret: process.env.COOKIE_SECRET,
-        cookie: {
-            httpOnly: true,
-            secure: false,
-        },
-    })
-);
+app.use(session(sessionOption));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
