@@ -10,8 +10,9 @@ const googleMapsClient = googleMaps.createClient({
 module.exports.getMain = async (req, res, next) => {
     try {
         const favorites = await Favorite.find({});
+        const histories = await History.find({}).limit(5).sort('-createdAt');
 
-        res.render('index', { results: favorites });
+        res.render('index', { results: favorites, histories });
     } catch (err) {
         console.error(err);
         next(err);
@@ -40,6 +41,8 @@ module.exports.getQuerySearch = async (req, res, next) => {
     const { lat, lng, type } = req.query;
 
     try {
+        const histories = await History.find({}).limit(5).sort('-createdAt');
+
         const newHistory = new History({
             query: req.params.query,
         });
@@ -67,6 +70,7 @@ module.exports.getQuerySearch = async (req, res, next) => {
             title: `${req.params.query} Search Result`,
             results: response.json.results,
             query: req.params.query,
+            histories,
         });
     } catch (err) {
         console.error(err);
