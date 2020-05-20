@@ -9,6 +9,8 @@ router.get('/autocomplete/:query', indexController.getQueryAutoComplete);
 
 router.get('/search/:query', indexController.getQuerySearch);
 
-router.post('/location/:id/favorite', indexController.postFavoriteLocation);
+router
+    .post('/location/:id/favorite', indexController.postFavoriteLocation)
+    .delete('/location/:id/favorite', indexController.deleteFavoriteLocation);
 
 module.exports = router;

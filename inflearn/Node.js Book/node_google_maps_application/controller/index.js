@@ -87,6 +87,16 @@ module.exports.postFavoriteLocation = async (req, res, next) => {
         res.send('Favorite saved');
     } catch (err) {
         console.error(err);
-        next(error);
+        next(err);
+    }
+};
+
+module.exports.deleteFavoriteLocation = async (req, res, next) => {
+    try {
+        await Favorite.remove({ placeId: req.params.id });
+        res.send('Favorite deleted');
+    } catch (err) {
+        console.error(err);
+        next(err);
     }
 };

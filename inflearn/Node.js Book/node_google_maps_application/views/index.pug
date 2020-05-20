@@ -29,12 +29,36 @@ block content
                 zoom: 13,
                 center: center
             });
-            positions.forEach(function (pos) {
-                new google.maps.Marker({
-                    position: { lat: pos.lat, lng: pos.lng },
+            positions.forEach(function (position) {
+                var marker = new google.maps.Marker({
+                    position: { lat: position.lat, lng: position.lng },
                     map: map,
-                    title: pos.name
+                    title: position.name
                 });
+                var div = document.createElement('div');
+                var h1 = document.createElement('h1');
+                var button = document.createElement('button');
+                h1.textContent = position.name;
+                button.classList.add('btn');
+                button.textContent = 'Remove Favorite';
+                button.onclick = function () {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onload = function () {
+                        if(xhr.status === 200) {
+                            location.href = '/';
+                        }
+                    }
+                    xhr.open('DELETE', '/location/' + position.id + '/favorite');
+                    xhr.send();
+                };
+                div.appendChild(h1);
+                div.appendChild(button);
+                var infowindow = new google.maps.InfoWindow({
+                    content: div
+                });
+                marker.addListener('click', function () {
+                    infowindow.open(map, marker);
+                })
             });
         }
     include api-script.pug
