@@ -1,3 +1,41 @@
 extends layout
 
 block content
+    h1 Favorite List
+    #map
+    if results
+        -let counter = 0;
+        for result in results
+            div= 'No. ' + ++counter
+            div= 'Address: ' + (result.vicinity ? result.vicinity : result.formatted_address)
+            div= 'Lat & LONG: ' + JSON.stringify(result.location[1], result.location[0])
+            div= 'Place ID: ' + result.placeId
+            div= 'Place Name: ' + result.name
+            div= '---------------------------------------------------------------------'
+    script.
+        var positions = [];
+    for result in results
+        script.
+            positions.push({
+                lat: #{result.location[1]},
+                lng: #{result.location[0]},
+                name: '#{result.name}',
+                id: '#{result.placeId}'
+            });
+    script.
+        function initMap() {
+            var center = positions[0] || { lat: 37.540705, lng: 126.956764 };
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 13,
+                center: center
+            });
+            positions.forEach(function (pos) {
+                new google.maps.Marker({
+                    position: { lat: pos.lat, lng: pos.lng },
+                    map: map,
+                    title: pos.name
+                });
+            });
+        }
+    include api-script.pug
+

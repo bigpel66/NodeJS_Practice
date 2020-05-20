@@ -7,7 +7,15 @@ html
         form#search-form(method='get')
             span Search Map Service
             input#search
-            button#search-btn.btn Search
+            select#type
+                option(value='') None
+                option(value='cafe') Cafe
+                option(value='store') Store
+                option(value='bank') Bank
+                option(value='school') School
+            button#search-btn.btn(type='submit') Search
+            button#loc-search-btn.btn(type='button') GPS Search
+            a#home.btn(href='/') Home
             ul#search-list
         block content
         script.
@@ -50,6 +58,33 @@ html
                     this.search.focus();
                     return false;
                 }
+                if(this.type.value) {
+                    return location.href = '/search/' + this.search.value.trim() + '?type=' + this.type.value;
+                }
                 this.action = '/search/' + this.search.value.trim();
                 return this.submit();
-            })
+            });
+            document.querySelector('#loc-search-btn').addEventListener('click', function (e) {
+                e.preventDefault();
+                if(navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        var search = document.querySelector('#search');
+                        var type = document.querySelector('#type').value;
+                        if(!search.value || !search.value.trim()) {
+                            search.focus();
+                            return false;
+                        }
+                        var lat = position.coords.latitude;
+                        var lng = position.coords.longitude;
+                        location.href = '/search/' + search.value.trim() + '?lat=' + lat + '&lng=' + lng + '&type=' + type;
+                    }, function () {
+                        alert('User Location Authorization Error');
+                    }, {
+                        enableHighAccuracy: true,
+                        maximumAge: 0,
+                        timeout: Infinity
+                    });
+                } else {
+                    alert('GPS is not supported');
+                }
+            });

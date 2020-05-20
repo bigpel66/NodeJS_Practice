@@ -2,14 +2,72 @@ extends layout
 
 block content
     h1= 'Search Result of ' + query + ' (' + results.length + ' Found)'
+
+    #map
     if results
-        -let counter = 0
+        -let counter = 0;
         for result in results
             div= 'No. ' + ++counter
-            div= 'Address: ' + result.formatted_address
+            div= 'Address: ' + (result.vicinity ? result.vicinity : result.formatted_address)
             div= 'Lat & LONG: ' + JSON.stringify(result.geometry.location)
             div= 'Place ID: ' + result.place_id
             div= 'Place Name: ' + result.name
             div= '---------------------------------------------------------------------'
+    script.
+        var positions = [];
+    for result in results
+        script.
+            positions.push({
+                lat: #{result.geometry.location.lat},
+                lng: #{result.geometry.location.lng},
+                name: '#{result.name}',
+                id: '#{result.place_id}'
+            })
+    script.
+        function initMap() {
+            var center = positions[0] || {lat: 37.540705, lng: 126.956764};
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 13,
+                center: center
+            });
+
+            positions.forEach(function(position) {
+                var marker = new google.maps.Marker({
+                    position: {lat: position.lat, lng: position.lng},
+                    map: map,
+                    title: position.name
+                })
+                var div = document.createElement('div');
+                var h1 = document.createElement('h1');
+                var button = document.createElement('button');
+                h1.textContent = position.name;
+                button.classList.add('btn');
+                button.textContent = 'Add Favorite';
+                button.onclick = function () {
+                    var xhr = new XMLHttpRequest();
+                    xhr.onload = function () {
+                        if(xhr.status === 200) {
+                            location.href = '/';
+                        }
+                    }
+                    xhr.open('POST', '/location/' + position.id + '/favorite');
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.send(JSON.stringify({
+                        name: position.name,
+                        lat: position.lat,
+                        lng: position.lng
+                    }));
+                };
+                div.appendChild(h1);
+                div.appendChild(button);
+                var infowindow = new google.maps.InfoWindow({
+                    content: div
+                });
+                marker.addListener('click', function () {
+                    infowindow.open(map, marker);
+                })
+            });
+        }
+    include api-script.pug
 
 
