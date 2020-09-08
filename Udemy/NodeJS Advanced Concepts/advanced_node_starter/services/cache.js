@@ -7,8 +7,22 @@ const exec = mongoose.Query.prototype.exec;
 
 redisClient.get = util.promisify(redisClient.get);
 
+mongoose.Query.prototype.cache = function () {
+    this.useCache = true;
+
+    return this;
+};
+
 mongoose.Query.prototype.exec = async function () {
     // caching on redis here
+
+    // Cache 여부 판별
+    if (!this.useCache) {
+        console.log('not cached');
+        return exec.apply(this, arguments);
+    }
+
+    console.log('cached');
 
     // Cache Key로 활용
     // console.log(this.getQuery());
