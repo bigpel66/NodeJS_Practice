@@ -61,3 +61,11 @@ mongoose.Query.prototype.exec = async function () {
 
     return result;
 };
+
+// 어떤 데이터가 저장되어 있든 해쉬 키에 해당하는 Bucket의 모든 데이터를 지운다.
+// 이 때 clearHash의 인자로 주어진 인자가 Object일 수 있으므로 JSON.stringify 해준다.
+module.exports = {
+    clearHash(hashKey) {
+        redisClient.del(JSON.stringify(hashKey));
+    },
+};
