@@ -13,6 +13,8 @@
 // Chromium Browser 제어를 위해 Puppeteer 라이브러리를 사용한다.
 // 오타가 자주나므로 재차 확인한다.
 const puppeteer = require('puppeteer');
+const userFactory = require('./factories/userFactory');
+const sessionFactory = require('./factories/sessionFactory');
 
 let browser, page;
 
@@ -56,32 +58,44 @@ test('Click Login & Start OAuth Flow', async () => {
     expect(url).toMatch(/accounts\.google\.com/);
 });
 
-test.only('When Signed In , Show Logout Button', async () => {
-    const id = '5f560533c554e2b971e8bc82';
+test('When Signed In , Show Logout Button', async () => {
+    // User Factory Refactored
+    // const id = '5f560533c554e2b971e8bc82';
+    const user = await userFactory();
 
-    const Buffer = require('safe-buffer').Buffer;
-    const sessionObject = {
-        passport: {
-            user: id,
-        },
-    };
-    const sessionString = Buffer.from(JSON.stringify(sessionObject)).toString(
-        'base64'
-    );
+    // Session Factory Refactored
+    // const Buffer = require('safe-buffer').Buffer;
+    // const sessionObject = {
+    //     passport: {
+    //         user: id,
+    //     },
+    // };
+    // const sessionString = Buffer.from(JSON.stringify(sessionObject)).toString(
+    //     'base64'
+    // );
 
-    const Keygrip = require('keygrip');
-    const keys = require('../config/keys');
-    const keygrip = new Keygrip([keys.cookieKey]);
-    // sessions=를 붙이는 이유는 Cookie Library가 이런식으로 이용하기 때문이다.
-    // 꼭 Technical한 이유는 아니다.
-    const sessionSignature = keygrip.sign('session=' + sessionString);
+    // const Keygrip = require('keygrip');
+    // const keys = require('../config/keys');
+    // const keygrip = new Keygrip([keys.cookieKey]);
+    // // sessions=를 붙이는 이유는 Cookie Library가 이런식으로 이용하기 때문이다.
+    // // 꼭 Technical한 이유는 아니다.
+    // const sessionSignature = keygrip.sign('session=' + sessionString);
 
-    // result value of generating for authentication
-    console.log(sessionString);
-    console.log(sessionSignature);
+    // // result value of generating for authentication
+    // console.log(sessionString);
+    // console.log(sessionSignature);
+    const { session, sig } = sessionFactory(user);
 
-    await page.setCookie({ name: 'session', value: sessionString });
-    await page.setCookie({ name: 'session.sig', value: sessionSignature });
+    await page.setCookie({
+        name: 'session',
+        //  value: sessionString
+        value: session,
+    });
+    await page.setCookie({
+        name: 'session.sig',
+        // value: sessionSignature
+        value: sig,
+    });
 
     await page.goto('localhost:3000');
     await page.waitFor('a[href="/auth/logout"]');
