@@ -13,7 +13,6 @@
 // Chromium Browser 제어를 위해 Puppeteer 라이브러리를 사용한다.
 // 오타가 자주나므로 재차 확인한다.
 const puppeteer = require('puppeteer');
-const { session } = require('passport');
 
 let browser, page;
 
@@ -57,7 +56,7 @@ test('Click Login & Start OAuth Flow', async () => {
     expect(url).toMatch(/accounts\.google\.com/);
 });
 
-test('When Signed In , Show Logout Button', async () => {
+test.only('When Signed In , Show Logout Button', async () => {
     const id = '5f560533c554e2b971e8bc82';
 
     const Buffer = require('safe-buffer').Buffer;
@@ -85,4 +84,18 @@ test('When Signed In , Show Logout Button', async () => {
     await page.setCookie({ name: 'session.sig', value: sessionSignature });
 
     await page.goto('localhost:3000');
+    await page.waitFor('a[href="/auth/logout"]');
+
+    // await 구문을 통해 실제로 Page가 로딩된 후에 작동할 것처럼 보이지만,
+    // 실제 Page는 이를 아주 빠르게 처리하려고 노력한다.
+    // 즉, localhost:3000으로 이동은 했지만 아직 Render가 완료된 상태가 아님에도,
+    // localhost:3000으로 이동은 된 상태기 때문에 eval을 시도한다.
+    // 따라서 해당 element가 존재하지 않음에도 eval을 시도하여 오류가 발생한다.
+    // Page에 대해 waitFor 함수가 필요하다.
+    const text = await page.$eval(
+        'a[href="/auth/logout"]',
+        (el) => el.innerHTML
+    );
+
+    expect(text).toEqual('Logout');
 });
