@@ -10,6 +10,8 @@
 //     expect(sum).toEqual(3);
 // });
 
+// helpers의 CustomPage Class를 통해 Browser, Page를 모두 통합하여 Refactor
+/*
 // Chromium Browser 제어를 위해 Puppeteer 라이브러리를 사용한다.
 // 오타가 자주나므로 재차 확인한다.
 const puppeteer = require('puppeteer');
@@ -58,7 +60,7 @@ test('Click Login & Start OAuth Flow', async () => {
     expect(url).toMatch(/accounts\.google\.com/);
 });
 
-test('When Signed In , Show Logout Button', async () => {
+test('When Signed In, Show Logout Button', async () => {
     // User Factory Refactored
     // const id = '5f560533c554e2b971e8bc82';
     const user = await userFactory();
@@ -112,4 +114,55 @@ test('When Signed In , Show Logout Button', async () => {
     );
 
     expect(text).toEqual('Logout');
+});
+*/
+
+const Page = require('./helpers/page');
+
+let page;
+
+beforeEach(async () => {
+    page = await Page.build();
+
+    await page.goto('localhost:3000');
+});
+
+afterEach(async () => {
+    await page.close();
+});
+
+test('Header Correct Text', async () => {
+    const text = await page.$eval('a.brand-logo', (el) => el.innerHTML);
+
+    expect(text).toEqual('Blogster');
+});
+
+test('Click Login & Start OAuth Flow', async () => {
+    await page.click('.right a');
+
+    const url = await page.url();
+
+    expect(url).toMatch(/accounts\.google\.com/);
+});
+
+test('When Signed In, Show Logout Button and Click', async () => {
+    await page.login();
+    await page.waitFor('a[href="/auth/logout"]');
+
+    const textLogout = await page.$eval(
+        'a[href="/auth/logout"]',
+        (el) => el.innerHTML
+    );
+
+    expect(textLogout).toEqual('Logout');
+
+    await page.click('a[href="/auth/logout"]');
+    await page.waitFor('a[href="/auth/google"]');
+
+    const textLogin = await page.$eval(
+        'a[href="/auth/google"]',
+        (el) => el.innerHTML
+    );
+
+    expect(textLogin).toEqual('Login With Google');
 });
