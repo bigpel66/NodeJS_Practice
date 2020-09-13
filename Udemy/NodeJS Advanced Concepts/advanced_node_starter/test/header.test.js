@@ -168,7 +168,7 @@ test('When Signed In, Show Logout Button and Click', async () => {
     //     'a[href="/auth/google"]',
     //     (el) => el.innerHTML
     // );
-    const textLogin = await page.getContentsOf('a[href="/auth/google/"]');
+    const textLogin = await page.getContentsOf('a[href="/auth/google"]');
 
     expect(textLogin).toEqual('Login With Google');
 });
