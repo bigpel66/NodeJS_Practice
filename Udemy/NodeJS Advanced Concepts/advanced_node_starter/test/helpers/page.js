@@ -35,6 +35,10 @@ class CustomPage {
         await this.page.goto('localhost:3000');
     }
 
+    getContentsOf(selector) {
+        return this.page.$eval(selector, (el) => el.innerHTML);
+    }
+
     // 해당 함수를 만들기 싫다면, Proxy의 get 함수에서 browser와 page의 순서를 바꾼다.
     close() {
         this.browser.close();
