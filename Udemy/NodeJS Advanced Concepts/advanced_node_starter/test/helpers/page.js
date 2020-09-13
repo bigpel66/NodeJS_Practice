@@ -72,7 +72,7 @@ class CustomPage {
         );
     }
 
-    async execRequests(actions) {
+    execRequests(actions) {
         return Promise.all(
             actions.map(({ method, path, data }) => {
                 return this[method](path, data);
