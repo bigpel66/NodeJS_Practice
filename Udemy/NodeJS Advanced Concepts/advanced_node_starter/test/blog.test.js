@@ -68,16 +68,34 @@ describe('When logged in', async () => {
         test('Submitting shows error messages', async () => {
             const titleError = await page.getContentsOf('.title .red-text');
             const contentError = await page.getContentsOf('.content .red-text');
+
             expect(titleError).toEqual('You must provide a value');
             expect(contentError).toEqual('You must provide a value');
         });
     });
 });
 
-// describe('When not logged in', async () => {
-//     beforeEach(async () => {});
+describe('When not logged in', async () => {
+    const actions = [
+        {
+            method: 'get',
+            path: '/api/blogs',
+        },
+        {
+            method: 'post',
+            path: '/api/blogs',
+            data: {
+                title: 'T',
+                content: 'C',
+            },
+        },
+    ];
 
-//     test('Creating a post results in an error', async () => {});
+    test('Blog related actions are prohibited', async () => {
+        const results = await page.execRequests(actions);
 
-//     test('Viewing a post results in an error', async () => {});
-// });
+        for (let result of results) {
+            expect(result).toEqual({ error: 'You must log in!' });
+        }
+    });
+});

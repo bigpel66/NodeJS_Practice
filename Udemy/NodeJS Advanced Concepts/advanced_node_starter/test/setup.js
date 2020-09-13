@@ -1,6 +1,6 @@
 // Server Code is totally separated from Test Code on jest
 // Thus, need to run MongoDB Connection to use DB directly
-jest.setTimeout(10000);
+jest.setTimeout(15000);
 
 require('../models/User');
 

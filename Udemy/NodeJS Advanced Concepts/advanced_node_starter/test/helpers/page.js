@@ -39,6 +39,47 @@ class CustomPage {
         return this.page.$eval(selector, (el) => el.innerHTML);
     }
 
+    get(path) {
+        return this.page.evaluate(async (_path) => {
+            const response = await fetch(_path, {
+                method: 'GET',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            return response.json();
+        }, path);
+    }
+
+    post(path, data) {
+        return this.page.evaluate(
+            async (_path, _data) => {
+                const response = await fetch(_path, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(_data),
+                });
+
+                return response.json();
+            },
+            path,
+            data
+        );
+    }
+
+    async execRequests(actions) {
+        return Promise.all(
+            actions.map(({ method, path, data }) => {
+                return this[method](path, data);
+            })
+        );
+    }
+
     // 해당 함수를 만들기 싫다면, Proxy의 get 함수에서 browser와 page의 순서를 바꾼다.
     close() {
         this.browser.close();
