@@ -132,7 +132,9 @@ afterEach(async () => {
 });
 
 test('Header Correct Text', async () => {
-    const text = await page.$eval('a.brand-logo', (el) => el.innerHTML);
+    // Refactored on CustomPage getContentsOf
+    // const text = await page.$eval('a.brand-logo', (el) => el.innerHTML);
+    const text = await page.getContentsOf('a.brand-logo');
 
     expect(text).toEqual('Blogster');
 });
@@ -149,20 +151,24 @@ test('When Signed In, Show Logout Button and Click', async () => {
     await page.login();
     await page.waitFor('a[href="/auth/logout"]');
 
-    const textLogout = await page.$eval(
-        'a[href="/auth/logout"]',
-        (el) => el.innerHTML
-    );
+    // Refactored on CustomPage getContentsOf
+    // const textLogout = await page.$eval(
+    //     'a[href="/auth/logout"]',
+    //     (el) => el.innerHTML
+    // );
+    const textLogout = await page.getContentsOf('a[href="/auth/logout"]');
 
     expect(textLogout).toEqual('Logout');
 
     await page.click('a[href="/auth/logout"]');
     await page.waitFor('a[href="/auth/google"]');
 
-    const textLogin = await page.$eval(
-        'a[href="/auth/google"]',
-        (el) => el.innerHTML
-    );
+    // Refactored on CustomPage getContentsOf
+    // const textLogin = await page.$eval(
+    //     'a[href="/auth/google"]',
+    //     (el) => el.innerHTML
+    // );
+    const textLogin = await page.getContentsOf('a[href="/auth/google/"]');
 
     expect(textLogin).toEqual('Login With Google');
 });
