@@ -1,6 +1,6 @@
 <h1 align="center">node_auction_application</h1>
 <div align="center">
-    The project to improve skills of web socket with express.js
+    The project to improve skills of web socket with Express.js
 </div>
 
 ## What is this project?
@@ -17,13 +17,13 @@ The real-time auction service.
 
 4. Auction products are written on the database, MySQL (using Sequellize as a ORM)
 
-5. Environment Variables are hided by dotenv.
+5. Environment Variables are hidden by dotenv.
 
 6. The expiration of counting timer is managed by node-schedule.
 
 7. The part of the auction joining is using joining room of socket.io
 
-8. Web Socket takes the app of express.js and handles session middleware
+8. Web Socket takes the app of Express.js and handles session middleware
 
 9. Server sends event periodically by setIntervals and sse.
 
