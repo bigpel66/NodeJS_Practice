@@ -20,7 +20,7 @@ const app = express();
 
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'images');
+        cb(null, 'upload');
     },
     filename: (req, file, cb) => {
         cb(null, new Date().toISOString() + '-' + file.originalname);
@@ -47,7 +47,7 @@ app.use(
     }).single('image')
 );
 
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/upload', express.static(path.join(__dirname, 'upload')));
 
 app.use((request, response, next) => {
     response.setHeader('Access-Control-Allow-Origin', '*');
