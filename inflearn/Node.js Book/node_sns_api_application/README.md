@@ -27,6 +27,8 @@ This project is related to the projects below.
 
 4. The version of API is specified. If the old version is deprecated, the user would better use newer version of the API.
 
+5. If the provider of the resource and the user of the resource is different from each other, the CORS Error could be happend. This project has to consider the CORS Error. (Because the API that sybolize resource is provided by this server, and this server should provide the infomation to the registered domain.) Must not allow all the domain to use API from this server. Only registered domains are allowed to use the API from this server. (The middleware regarding the request header before the API Handler could solve it by using "cors" package)
+
 ## Demo
 
 <div style="display:flex" align="center">
