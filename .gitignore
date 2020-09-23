@@ -1,4 +1,5 @@
 .DS_Store
+.vscode
 
 #inflearn
 ./inflearn/.DS_Store
