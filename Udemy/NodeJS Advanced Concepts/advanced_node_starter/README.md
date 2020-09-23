@@ -1,6 +1,7 @@
-# advanced_node_starter
-
-The project to implement performance improvement
+<h1 align="center">advanced_node_starter</h1>
+<div align="center">
+    The project to implement performance improvement
+</div>
 
 ## Caching with REDIS
 
