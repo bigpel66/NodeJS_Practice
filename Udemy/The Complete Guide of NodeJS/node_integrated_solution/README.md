@@ -1,6 +1,6 @@
 <h1 align="center">node_integrated_solution</h1>
 <div align="center">
-    The project to experience the general usage of node.js with database
+    The Project to Experience the General Usage of Node.js with Database
 </div>
 
 ## What is this project?

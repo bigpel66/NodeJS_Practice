@@ -1,6 +1,6 @@
 <h1 align="center">node_sns_api_application</h1>
 <div align="center">
-    The project to implement API Server which provides SNS service functions
+    The Project to Implement API Server which Provides SNS Service Functions
 </div>
 
 ## What is this project?

@@ -1,6 +1,6 @@
 <h1 align="center">node_restapi_solution</h1>
 <div align="center">
-    The project to improve skills on the backend service by using restful architecture and graphql
+    The Project to Improve Skills on the Backend Service by Using Restful Architecture and Graphql
 </div>
 
 ## Features

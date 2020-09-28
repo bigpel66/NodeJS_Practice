@@ -1,6 +1,6 @@
 <h1 align="center">node_basic_practice</h1>
 <div align="center">
-    The code for the basic of JavaScript and Node.js
+    The Code for the Basic of JavaScript and Node.js
 </div>
 
 ## List of Contents

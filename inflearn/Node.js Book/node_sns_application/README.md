@@ -1,6 +1,6 @@
 <h1 align="center">node_sns_application</h1>
 <div align="centeR">
-    The project to implement SNS service
+    The Project to Implement SNS Service
 </div>
 
 ## What is this project?

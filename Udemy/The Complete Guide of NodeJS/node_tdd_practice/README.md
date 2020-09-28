@@ -1,6 +1,6 @@
 <h1 align="center">node_tdd_practice</h1>
 <div align="center">
-    The project to improve tdd (unit test) by using mocha, chai, sinon
+    The Project to Improve TDD (unit test) by Using mocha, chai, sinon Packages
 </div>
 
 ## Features

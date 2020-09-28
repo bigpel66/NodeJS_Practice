@@ -1,6 +1,6 @@
 <h1 align="center">node_cli_application</h1>
 <div align="center">
-    The simple cli-program to practice internal modules of Node.js
+    The Simple CLI Program to Practice Internal Modules of Node.js
 </div>
 
 ## List of Contents

@@ -1,6 +1,6 @@
 <h1 align="center">advanced_node_starter</h1>
 <div align="center">
-    The project to implement performance improvement
+    The Project to Implement Performance Improvement
 </div>
 
 ## Caching with REDIS

@@ -1,6 +1,6 @@
 <h1 align="center">node_gif_chat_application</h1>
 <div align="center">
-    The project to practice real-time service by using Web Socket
+    The Project to Practice Real-Time Service by Using Web Socket
 </div>
 
 ## What is this project?

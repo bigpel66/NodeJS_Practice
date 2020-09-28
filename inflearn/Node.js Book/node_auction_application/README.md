@@ -1,6 +1,6 @@
 <h1 align="center">node_auction_application</h1>
 <div align="center">
-    The project to improve skills of web socket with Express.js
+    The Project to Improve Skills of Web Socket with Express.js
 </div>
 
 ## What is this project?

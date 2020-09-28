@@ -1,6 +1,6 @@
 <h1 align="center">node_google_maps_application</h1>
 <div align="center">
-    The project to practice the search from the database and utilize 3rd Party API
+    The Project to Practice the Search from the Database and Utilize 3rd Party API
 </div>
 
 ## Features

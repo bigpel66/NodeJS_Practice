@@ -1,6 +1,6 @@
 <h1 align="center">node_sns_call_application</h1>
 <div align="center">
-    The project to test the implemented API server
+    The Project to Test the Implemented API Server
 </div>
 
 ## What is this project?
